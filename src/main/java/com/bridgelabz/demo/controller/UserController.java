@@ -37,13 +37,13 @@ public class UserController {
 			for (ObjectError error : bindingResult.getAllErrors()) {
 				errorMessages.add(error.getDefaultMessage());
 			}
-			return new ResponseEntity<Response>(getResponse(Message.BAD_REQUEST, errorMessages, 404),
-					HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<Response>(getResponse(Message.CONFLICT, errorMessages, 409),
+					HttpStatus.CONFLICT);
 		}
 		Message result = userService.addUser(user);
 		if (result.equals(Message.USER_ADDED))
 			return new ResponseEntity<Response>(getResponse(Message.SUCCESSFUL, result, 200), HttpStatus.OK);
-		return new ResponseEntity<Response>(getResponse(Message.BAD_REQUEST, result, 404), HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<Response>(getResponse(Message.CONFLICT, result, 409), HttpStatus.CONFLICT);
 	}
 
 	public Response getResponse(Message message, Object result, int status) {

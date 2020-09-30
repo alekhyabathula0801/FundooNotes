@@ -25,7 +25,7 @@ public class UserService {
 				return Message.USER_ADDED;
 			}
 		} catch (Exception e) {
-
+			e.printStackTrace();
 		}
 		return Message.EMAIL_ID_ALREADY_EXISTS;
 	}
