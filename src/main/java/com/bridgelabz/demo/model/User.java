@@ -1,8 +1,12 @@
 package com.bridgelabz.demo.model;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 
 import org.springframework.stereotype.Component;
 
@@ -12,15 +16,26 @@ import org.springframework.stereotype.Component;
 public class User {
 	
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	@NotEmpty(message = "first name cannot be empty or null")
+	@Pattern(regexp="[A-Z][a-z]{2,}", message = "First name must start with uppercase follwed by lowercase with minimum of 3 characters")
 	private String firstName;
+	@NotEmpty
+	@Pattern(regexp="[A-Z][a-z]{2,}", message = "Last name must start with uppercase follwed by lowercase with minimum of 3 characters")
 	private String lastName;
+	@NotEmpty
+	@Pattern(regexp = "^[a-zA-Z0-9]+([._+-][0-9a-zA-Z]+)*@[a-zA-Z0-9]+\\.[a-zA-Z]{2,4}([.][a-zA-Z]{2,3})?$", message = "Email must be in the form of - char@char.com or char@char.com.in")
 	private String email;
+	@NotEmpty
+	@Pattern(regexp = "(?=.*[A-Z])(?=.*[^0-9a-zA-Z])(?=.*[0-9]).{8,}", message = "Password must contain atleast one capital letter, special character and number with minimum of 8 characters")
 	private String password;
-	private long mobile;
+	@NotEmpty
+	@Pattern(regexp = "[0-9]{5,10}", message = "Mobile number must contain 5-10 digits")
+	private String mobile;
 	private int is_verified;
 	
-	public User(String firstName, String lastName, String email, String password, long mobile, int is_verified) {
+	public User(String firstName, String lastName, String email, String password, String mobile, int is_verified) {
 		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -74,11 +89,11 @@ public class User {
 		this.password = password;
 	}
 	
-	public long getMobile() {
+	public String getMobile() {
 		return mobile;
 	}
 	
-	public void setMobile(long mobile) {
+	public void setMobile(String mobile) {
 		this.mobile = mobile;
 	}
 	
