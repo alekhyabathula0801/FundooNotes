@@ -14,15 +14,15 @@ import org.springframework.stereotype.Component;
 @Entity
 @Table(name = "user_details")
 public class User {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	@NotEmpty(message = "first name cannot be empty or null")
-	@Pattern(regexp="[A-Z][a-z]{2,}", message = "First name must start with uppercase follwed by lowercase with minimum of 3 characters")
+	@Pattern(regexp = "[A-Z][a-z]{2,}", message = "First name must start with uppercase follwed by lowercase with minimum of 3 characters")
 	private String firstName;
 	@NotEmpty
-	@Pattern(regexp="[A-Z][a-z]{2,}", message = "Last name must start with uppercase follwed by lowercase with minimum of 3 characters")
+	@Pattern(regexp = "[A-Z][a-z]{2,}", message = "Last name must start with uppercase follwed by lowercase with minimum of 3 characters")
 	private String lastName;
 	@NotEmpty
 	@Pattern(regexp = "^[a-zA-Z0-9]+([._+-][0-9a-zA-Z]+)*@[a-zA-Z0-9]+\\.[a-zA-Z]{2,4}([.][a-zA-Z]{2,3})?$", message = "Email must be in the form of - char@char.com or char@char.com.in")
@@ -34,7 +34,7 @@ public class User {
 	@Pattern(regexp = "[0-9]{5,10}", message = "Mobile number must contain 5-10 digits")
 	private String mobile;
 	private int is_verified;
-	
+
 	public User(String firstName, String lastName, String email, String password, String mobile, int is_verified) {
 		super();
 		this.firstName = firstName;
@@ -46,7 +46,7 @@ public class User {
 	}
 
 	public User() {
-		
+
 	}
 
 	public Long getId() {
@@ -60,47 +60,47 @@ public class User {
 	public String getFirstName() {
 		return firstName;
 	}
-	
+
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
-	
+
 	public String getLastName() {
 		return lastName;
 	}
-	
+
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
-	
+
 	public String getEmail() {
 		return email;
 	}
-	
+
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
+
 	public String getPassword() {
 		return password;
 	}
-	
+
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+
 	public String getMobile() {
 		return mobile;
 	}
-	
+
 	public void setMobile(String mobile) {
 		this.mobile = mobile;
 	}
-	
+
 	public int getIs_verified() {
 		return is_verified;
 	}
-	
+
 	public void setIs_verified(int is_verified) {
 		this.is_verified = is_verified;
 	}
@@ -110,7 +110,7 @@ public class User {
 		return "User [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email
 				+ ", password=" + password + ", mobile=" + mobile + ", is_verified=" + is_verified + "]";
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

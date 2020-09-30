@@ -23,30 +23,34 @@ import com.bridgelabz.demo.service.UserService;
 @RestController
 @RequestMapping(path = "fundoo")
 public class UserController {
-	
+
 	@Autowired
 	UserService userService;
-	
+
 	@Autowired
 	Response response;
-	
+
 	@PostMapping(path = "/add_user")
 	public ResponseEntity<Response> addUser(@Valid @RequestBody User user, BindingResult bindingResult) {
-		if(bindingResult.hasErrors()) {
+		if (bindingResult.hasErrors()) {
 			List<String> errorMessages = new ArrayList<String>();
-			for(ObjectError error : bindingResult.getAllErrors()) {
+			for (ObjectError error : bindingResult.getAllErrors()) {
 				errorMessages.add(error.getDefaultMessage());
 			}
-			response.setMessage(Message.BAD_REQUEST);
-			response.setResult(errorMessages);
-			response.setStatus(404);
-			return  new ResponseEntity<Response>(response,HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<Response>(getResponse(Message.BAD_REQUEST, errorMessages, 404),
+					HttpStatus.BAD_REQUEST);
 		}
-		User addedUser = userService.addUser(user);
-		response.setMessage(Message.SUCCESSFUL);
-		response.setResult(addedUser);
-		response.setStatus(200);
-		return new ResponseEntity<Response>(response,HttpStatus.OK);
+		Message result = userService.addUser(user);
+		if (result.equals(Message.USER_ADDED))
+			return new ResponseEntity<Response>(getResponse(Message.SUCCESSFUL, result, 200), HttpStatus.OK);
+		return new ResponseEntity<Response>(getResponse(Message.BAD_REQUEST, result, 404), HttpStatus.BAD_REQUEST);
+	}
+
+	public Response getResponse(Message message, Object result, int status) {
+		response.setMessage(message);
+		response.setResult(result);
+		response.setStatus(status);
+		return response;
 	}
 
 }
