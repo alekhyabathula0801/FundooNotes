@@ -23,22 +23,22 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@NotEmpty(message = "first name cannot be empty or null")
+	@NotEmpty(message = "First name cannot be empty or null")
 	@Pattern(regexp = "[A-Z][a-z]{2,}", message = "First name must start with uppercase follwed by lowercase with minimum of 3 characters")
 	private String firstName;
-	@NotEmpty
+	@NotEmpty(message = "Last name cannot be empty or null")
 	@Pattern(regexp = "[A-Z][a-z]{2,}", message = "Last name must start with uppercase follwed by lowercase with minimum of 3 characters")
 	private String lastName;
-	@NotEmpty
+	@NotEmpty(message = "Email cannot be empty or null")
 	@Pattern(regexp = "^[a-zA-Z0-9]+([._+-][0-9a-zA-Z]+)*@[a-zA-Z0-9]+\\.[a-zA-Z]{2,4}([.][a-zA-Z]{2,3})?$", message = "Email must be in the form of - char@char.com or char@char.com.in")
 	private String email;
-	@NotEmpty
+	@NotEmpty(message = "Pasword cannot be empty or null")
 	@Pattern(regexp = "(?=.*[A-Z])(?=.*[^0-9a-zA-Z])(?=.*[0-9]).{8,}", message = "Password must contain atleast one capital letter, special character and number with minimum of 8 characters")
 	private String password;
-	@NotEmpty
+	@NotEmpty(message = "Mobile number cannot be empty or null")
 	@Pattern(regexp = "[0-9]{5,10}", message = "Mobile number must contain 5-10 digits")
 	private String mobile;
-	private int is_verified;
+	private int isVerified;
 
 	public User(String firstName, String lastName, String email, String password, String mobile, int is_verified) {
 		super();
@@ -47,13 +47,13 @@ public class User {
 		this.email = email;
 		this.password = password;
 		this.mobile = mobile;
-		this.is_verified = is_verified;
+		this.isVerified = is_verified;
 	}
 
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email
-				+ ", password=" + password + ", mobile=" + mobile + ", is_verified=" + is_verified + "]";
+				+ ", password=" + password + ", mobile=" + mobile + ", is_verified=" + isVerified + "]";
 	}
 
 	@Override
@@ -80,7 +80,7 @@ public class User {
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
-		if (is_verified != other.is_verified)
+		if (isVerified != other.isVerified)
 			return false;
 		if (lastName == null) {
 			if (other.lastName != null)
