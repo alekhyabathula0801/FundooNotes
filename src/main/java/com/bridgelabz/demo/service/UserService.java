@@ -14,6 +14,9 @@ public class UserService {
 	@Autowired
 	private UserRepository userRepository;
 
+	@Autowired
+	private EmailService emailService;
+
 	public UserService() {
 
 	}
@@ -49,6 +52,17 @@ public class UserService {
 					return Message.EMAIL_HAS_NOT_VERIFIED;
 			}
 			return Message.ENTERED_WRONG_PASSWORD;
+		}
+		return Message.EMAIL_ID_DOESNT_EXISTS;
+	}
+
+	public Message sendEmail(String email) {
+		User user = userRepository.findByEmail(email);
+		if (user != null) {
+			if (emailService.sendMail(email, "Your Password : " + user.getPassword(),
+					"Recovery password for Fundoo App"))
+				return Message.EMAIL_SENT_SUCCESSFULLY;
+			return Message.SERVER_SIDE_PROBLEM;
 		}
 		return Message.EMAIL_ID_DOESNT_EXISTS;
 	}

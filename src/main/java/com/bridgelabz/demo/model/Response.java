@@ -8,8 +8,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Component 
-@Getter @Setter @NoArgsConstructor
+@Component
+@Getter
+@Setter
+@NoArgsConstructor
 public class Response {
 	private int status;
 	private Message message;
@@ -20,5 +22,5 @@ public class Response {
 		this.message = message;
 		this.status = status;
 	}
-	
+
 }

@@ -17,7 +17,9 @@ import lombok.Setter;
 @Component
 @Entity
 @Table(name = "user_details")
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 public class User {
 
 	@Id
