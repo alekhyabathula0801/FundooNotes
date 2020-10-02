@@ -8,13 +8,10 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 
-import org.springframework.stereotype.Component;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Component
 @Entity
 @Table(name = "user_details")
 @Getter

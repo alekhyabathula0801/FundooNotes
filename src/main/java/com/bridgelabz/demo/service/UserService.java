@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.bridgelabz.demo.enumeration.Message;
 import com.bridgelabz.demo.model.Login;
+import com.bridgelabz.demo.model.Response;
 import com.bridgelabz.demo.model.User;
 import com.bridgelabz.demo.repository.UserRepository;
 import com.bridgelabz.demo.util.UserToken;
@@ -24,6 +25,9 @@ public class UserService {
 	
 	@Autowired
 	private Utility utility;
+	
+	@Autowired
+	Response response;
 
 	public UserService() {
 
@@ -85,6 +89,13 @@ public class UserService {
 			}
 		}
 		return Message.INVALID_USER;
+	}
+	
+	public Response getResponse(Message message, Object result, int status) {
+		response.setMessage(message);
+		response.setResult(result);
+		response.setStatus(status);
+		return response;
 	}
 
 }
