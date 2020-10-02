@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -77,6 +78,19 @@ public class UserController {
 			return new ResponseEntity<Response>(getResponse(Message.NOT_FOUND, message, 404), HttpStatus.NOT_FOUND);
 		return new ResponseEntity<Response>(getResponse(Message.TRY_AGAIN_LATER, message, 500),
 				HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	@PostMapping(path = "/reset_password/{token}")
+	public ResponseEntity<Response> resetPassword(@RequestParam("password") String password,
+			@PathVariable String token) {
+		if (!password.matches("(?=.*[A-Z])(?=.*[^0-9a-zA-Z])(?=.*[0-9]).{8,}")) {
+			String errorMessage = "Password must contain atleast one capital letter, special character and number with minimum of 8 characters";
+			return new ResponseEntity<Response>(getResponse(Message.CONFLICT, errorMessage, 409), HttpStatus.CONFLICT);
+		}
+		Message message = userService.resetPassword(password, token);
+		if (message.equals(Message.PASSWORD_UPDATED_SUCCESSFULLY_PLEASE_LOGIN_TO_CONTINUE))
+			return new ResponseEntity<Response>(getResponse(Message.SUCCESSFUL, message, 200), HttpStatus.OK);
+		return new ResponseEntity<Response>(getResponse(Message.BAD_REQUEST, message, 404), HttpStatus.BAD_REQUEST);
 	}
 
 	public Response getResponse(Message message, Object result, int status) {

@@ -7,6 +7,7 @@ import com.bridgelabz.demo.enumeration.Message;
 import com.bridgelabz.demo.model.Login;
 import com.bridgelabz.demo.model.User;
 import com.bridgelabz.demo.repository.UserRepository;
+import com.bridgelabz.demo.util.UserToken;
 import com.bridgelabz.demo.util.Utility;
 
 @Service
@@ -17,6 +18,12 @@ public class UserService {
 
 	@Autowired
 	private EmailService emailService;
+	
+	@Autowired
+	private UserToken userToken;
+	
+	@Autowired
+	private Utility utility;
 
 	public UserService() {
 
@@ -59,12 +66,25 @@ public class UserService {
 	public Message sendEmail(String email) {
 		User user = userRepository.findByEmail(email);
 		if (user != null) {
-			if (emailService.sendMail(email, "Click on link to reset password \n" + Utility.getBody("reset_password",user.getId()),
+			if (emailService.sendMail(email, "Click on link to reset password \n" + utility.getBody("reset_password",user.getId()),
 					"Recovery password for Fundoo App"))
 				return Message.EMAIL_SENT_SUCCESSFULLY;
 			return Message.SERVER_SIDE_PROBLEM;
 		}
 		return Message.EMAIL_ID_DOESNT_EXISTS;
+	}
+
+	public Message resetPassword(String password, String token) {
+		Long userId = userToken.getUserIdFromToken(token);
+		if(userId != null) {
+			User user = userRepository.findById(userId).get();
+			if(user != null) {
+				user.setPassword(password);
+				userRepository.save(user);
+				return Message.PASSWORD_UPDATED_SUCCESSFULLY_PLEASE_LOGIN_TO_CONTINUE;
+			}
+		}
+		return Message.INVALID_USER;
 	}
 
 }
