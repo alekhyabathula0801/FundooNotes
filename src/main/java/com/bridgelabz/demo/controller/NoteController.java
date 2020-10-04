@@ -21,6 +21,8 @@ import com.bridgelabz.demo.model.Note;
 import com.bridgelabz.demo.service.NoteService;
 import com.bridgelabz.demo.service.UserService;
 
+import io.swagger.annotations.ApiOperation;
+
 @Controller
 @RequestMapping(path = "fundoo")
 public class NoteController {
@@ -32,6 +34,7 @@ public class NoteController {
 	NoteService noteService;
 
 	@PostMapping(path = "/add_note")
+	@ApiOperation(value = "Save Note")
 	public ResponseEntity<Response> addUser(@Valid @RequestBody Note note, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			List<String> errorMessages = new ArrayList<String>();

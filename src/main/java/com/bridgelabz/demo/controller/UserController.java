@@ -23,6 +23,8 @@ import com.bridgelabz.demo.model.Response;
 import com.bridgelabz.demo.model.User;
 import com.bridgelabz.demo.service.UserService;
 
+import io.swagger.annotations.ApiOperation;
+
 @Controller
 @RequestMapping(path = "fundoo")
 public class UserController {
@@ -31,6 +33,7 @@ public class UserController {
 	UserService userService;
 
 	@PostMapping(path = "/add_user")
+	@ApiOperation(value = "User registration")
 	public ResponseEntity<Response> addUser(@Valid @RequestBody User user, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			List<String> errorMessages = new ArrayList<String>();
@@ -46,6 +49,7 @@ public class UserController {
 	}
 
 	@PostMapping(path = "/login")
+	@ApiOperation(value = "User login")
 	public ResponseEntity<Response> loginUser(@Valid @RequestBody Login login, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			List<String> errorMessages = new ArrayList<String>();
@@ -63,6 +67,7 @@ public class UserController {
 	}
 
 	@PostMapping(path = "/forgot_password")
+	@ApiOperation(value = "Forgot password")
 	public ResponseEntity<Response> forgotPassword(@RequestParam String email) {
 		if (!email.matches("^[a-zA-Z0-9]+([._+-][0-9a-zA-Z]+)*@[a-zA-Z0-9]+\\.[a-zA-Z]{2,4}([.][a-zA-Z]{2,3})?$")) {
 			String errorMessage = "Email must be in the form of - char@char.com or char@char.com.in";
@@ -78,6 +83,7 @@ public class UserController {
 	}
 
 	@PostMapping(path = "/reset_password/{token}")
+	@ApiOperation(value = "Reset password")
 	public ResponseEntity<Response> resetPassword(@RequestParam("password") String password,
 			@PathVariable String token) {
 		if (!password.matches("(?=.*[A-Z])(?=.*[^0-9a-zA-Z])(?=.*[0-9]).{8,}")) {
