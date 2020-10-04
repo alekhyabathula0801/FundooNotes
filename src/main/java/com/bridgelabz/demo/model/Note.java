@@ -31,10 +31,10 @@ public class Note {
 	private String notesTitle;
 	@NotEmpty(message = "Notes description cannot be empty or null")
 	private String notesDescription;
-	private int pin = 0;
+	private boolean pin = false;
 	private Date remindMe;
 	private String color = "white";
-	private int archive = 0;
-	private int trash = 0;
+	private boolean archive = false;
+	private boolean trash = false;
 
 }

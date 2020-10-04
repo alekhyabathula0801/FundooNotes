@@ -37,9 +37,9 @@ public class User {
 	@NotEmpty(message = "Mobile number cannot be empty or null")
 	@Pattern(regexp = "[0-9]{5,10}", message = "Mobile number must contain 5-10 digits")
 	private String mobile;
-	private int isVerified;
+	private Boolean isVerified = false;
 
-	public User(String firstName, String lastName, String email, String password, String mobile, int is_verified) {
+	public User(String firstName, String lastName, String email, String password, String mobile, Boolean is_verified) {
 		super();
 		this.firstName = firstName;
 		this.lastName = lastName;

@@ -50,7 +50,7 @@ public class UserService {
 	public User userLogin(Login login) {
 		User user = userRepository.findByEmail(login.getEmail());
 		if (user != null) {
-			if (user.getPassword().equals(login.getPassword()) & user.getIsVerified() == 1)
+			if (user.getPassword().equals(login.getPassword()) & user.getIsVerified())
 				return user;
 		}
 		return null;
@@ -60,7 +60,7 @@ public class UserService {
 		User user = userRepository.findByEmail(login.getEmail());
 		if (user != null) {
 			if (user.getPassword().equals(login.getPassword())) {
-				if (user.getIsVerified() != 1)
+				if (!user.getIsVerified())
 					return Message.EMAIL_HAS_NOT_VERIFIED;
 			}
 			return Message.ENTERED_WRONG_PASSWORD;
@@ -117,7 +117,7 @@ public class UserService {
 		if (userId != null) {
 			User user = userRepository.findById(userId).get();
 			if (user != null) {
-				user.setIsVerified(1);
+				user.setIsVerified(true);
 				userRepository.save(user);
 				return Message.EMAIL_VERIFIED_SUCCESSFULLY_PLEASE_LOGIN_TO_CONTINUE;
 			}
