@@ -11,9 +11,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bridgelabz.demo.enumeration.Message;
 import com.bridgelabz.demo.model.Response;
@@ -45,6 +47,16 @@ public class NoteController {
 					HttpStatus.CONFLICT);
 		}
 		return noteService.addNote(note);
+	}
+
+	@GetMapping(path = "/get_all_notes")
+	@ApiOperation(value = "Get all notes by user id")
+	public ResponseEntity<Response> addUser(@RequestParam Long userId) {
+		if (userId == null) {
+			return new ResponseEntity<Response>(userService.getResponse(Message.USER_ID_CANNOT_BE_NULL, null, 409),
+					HttpStatus.CONFLICT);
+		}
+		return noteService.getAllNotesByUserId(userId);
 	}
 
 }
