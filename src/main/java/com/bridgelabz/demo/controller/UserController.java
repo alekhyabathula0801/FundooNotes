@@ -40,12 +40,15 @@ public class UserController {
 			for (ObjectError error : bindingResult.getAllErrors()) {
 				errorMessages.add(error.getDefaultMessage());
 			}
-			return new ResponseEntity<Response>(userService.getResponse(Message.CONFLICT, errorMessages, 409), HttpStatus.CONFLICT);
+			return new ResponseEntity<Response>(userService.getResponse(Message.CONFLICT, errorMessages, 409),
+					HttpStatus.CONFLICT);
 		}
 		Message result = userService.addUser(user);
-		if (result.equals(Message.USER_ADDED))
-			return new ResponseEntity<Response>(userService.getResponse(Message.SUCCESSFUL, result, 200), HttpStatus.OK);
-		return new ResponseEntity<Response>(userService.getResponse(Message.CONFLICT, result, 409), HttpStatus.CONFLICT);
+		if (result.equals(Message.USER_ADDED_AND_VERIFY_EMAIL_TO_CONTINUE))
+			return new ResponseEntity<Response>(userService.getResponse(Message.SUCCESSFUL, result, 200),
+					HttpStatus.OK);
+		return new ResponseEntity<Response>(userService.getResponse(Message.CONFLICT, result, 409),
+				HttpStatus.CONFLICT);
 	}
 
 	@PostMapping(path = "/login")
@@ -56,14 +59,38 @@ public class UserController {
 			for (ObjectError error : bindingResult.getAllErrors()) {
 				errorMessages.add(error.getDefaultMessage());
 			}
-			return new ResponseEntity<Response>(userService.getResponse(Message.CONFLICT, errorMessages, 409), HttpStatus.CONFLICT);
+			return new ResponseEntity<Response>(userService.getResponse(Message.CONFLICT, errorMessages, 409),
+					HttpStatus.CONFLICT);
 		}
 		User user = userService.userLogin(login);
 		if (user != null)
-			return new ResponseEntity<Response>(userService.getResponse(Message.USER_LOGGED_IN_SUCCESFULL, user.getId(), 200),
-					HttpStatus.OK);
+			return new ResponseEntity<Response>(
+					userService.getResponse(Message.USER_LOGGED_IN_SUCCESFULL, user.getId(), 200), HttpStatus.OK);
 		Message message = userService.validateUser(login);
-		return new ResponseEntity<Response>(userService.getResponse(Message.BAD_REQUEST, message, 404), HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<Response>(userService.getResponse(Message.BAD_REQUEST, message, 404),
+				HttpStatus.BAD_REQUEST);
+	}
+
+	@PostMapping(path = "/send_email_verification")
+	@ApiOperation(value = "Send email verification")
+	public ResponseEntity<Response> sendEmailVerification(@RequestParam String email) {
+		Message message = userService.sendEmailVerification(email);
+		if (message.equals(Message.EMAIL_SENT_SUCCESSFULLY))
+			return new ResponseEntity<Response>(userService.getResponse(Message.SUCCESSFUL, message, 200),
+					HttpStatus.OK);
+		return new ResponseEntity<Response>(userService.getResponse(Message.BAD_REQUEST, message, 404),
+				HttpStatus.BAD_REQUEST);
+	}
+
+	@PostMapping(path = "/verify_email/{token}")
+	@ApiOperation(value = "Verify Email")
+	public ResponseEntity<Response> verifyEmail(@PathVariable String token) {
+		Message message = userService.verifyEmail(token);
+		if (message.equals(Message.EMAIL_VERIFIED_SUCCESSFULLY_PLEASE_LOGIN_TO_CONTINUE))
+			return new ResponseEntity<Response>(userService.getResponse(Message.SUCCESSFUL, message, 200),
+					HttpStatus.OK);
+		return new ResponseEntity<Response>(userService.getResponse(Message.BAD_REQUEST, message, 404),
+				HttpStatus.BAD_REQUEST);
 	}
 
 	@PostMapping(path = "/forgot_password")
@@ -71,13 +98,16 @@ public class UserController {
 	public ResponseEntity<Response> forgotPassword(@RequestParam String email) {
 		if (!email.matches("^[a-zA-Z0-9]+([._+-][0-9a-zA-Z]+)*@[a-zA-Z0-9]+\\.[a-zA-Z]{2,4}([.][a-zA-Z]{2,3})?$")) {
 			String errorMessage = "Email must be in the form of - char@char.com or char@char.com.in";
-			return new ResponseEntity<Response>(userService.getResponse(Message.CONFLICT, errorMessage, 409), HttpStatus.CONFLICT);
+			return new ResponseEntity<Response>(userService.getResponse(Message.CONFLICT, errorMessage, 409),
+					HttpStatus.CONFLICT);
 		}
-		Message message = userService.sendEmail(email);
+		Message message = userService.sendEmailToRecoverPassword(email);
 		if (message.equals(Message.EMAIL_SENT_SUCCESSFULLY))
-			return new ResponseEntity<Response>(userService.getResponse(Message.SUCCESSFUL, message, 200), HttpStatus.OK);
+			return new ResponseEntity<Response>(userService.getResponse(Message.SUCCESSFUL, message, 200),
+					HttpStatus.OK);
 		if (message.equals(Message.EMAIL_ID_DOESNT_EXISTS))
-			return new ResponseEntity<Response>(userService.getResponse(Message.NOT_FOUND, message, 404), HttpStatus.NOT_FOUND);
+			return new ResponseEntity<Response>(userService.getResponse(Message.NOT_FOUND, message, 404),
+					HttpStatus.NOT_FOUND);
 		return new ResponseEntity<Response>(userService.getResponse(Message.TRY_AGAIN_LATER, message, 500),
 				HttpStatus.INTERNAL_SERVER_ERROR);
 	}
@@ -88,12 +118,15 @@ public class UserController {
 			@PathVariable String token) {
 		if (!password.matches("(?=.*[A-Z])(?=.*[^0-9a-zA-Z])(?=.*[0-9]).{8,}")) {
 			String errorMessage = "Password must contain atleast one capital letter, special character and number with minimum of 8 characters";
-			return new ResponseEntity<Response>(userService.getResponse(Message.CONFLICT, errorMessage, 409), HttpStatus.CONFLICT);
+			return new ResponseEntity<Response>(userService.getResponse(Message.CONFLICT, errorMessage, 409),
+					HttpStatus.CONFLICT);
 		}
 		Message message = userService.resetPassword(password, token);
 		if (message.equals(Message.PASSWORD_UPDATED_SUCCESSFULLY_PLEASE_LOGIN_TO_CONTINUE))
-			return new ResponseEntity<Response>(userService.getResponse(Message.SUCCESSFUL, message, 200), HttpStatus.OK);
-		return new ResponseEntity<Response>(userService.getResponse(Message.BAD_REQUEST, message, 404), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<Response>(userService.getResponse(Message.SUCCESSFUL, message, 200),
+					HttpStatus.OK);
+		return new ResponseEntity<Response>(userService.getResponse(Message.BAD_REQUEST, message, 404),
+				HttpStatus.BAD_REQUEST);
 	}
 
 }

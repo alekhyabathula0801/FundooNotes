@@ -19,13 +19,13 @@ public class UserService {
 
 	@Autowired
 	private EmailService emailService;
-	
+
 	@Autowired
 	private UserToken userToken;
-	
+
 	@Autowired
 	private Utility utility;
-	
+
 	@Autowired
 	Response response;
 
@@ -38,7 +38,8 @@ public class UserService {
 			User userDetails = userRepository.findByEmail(user.getEmail());
 			if (userDetails == null) {
 				userRepository.save(user);
-				return Message.USER_ADDED;
+				sendEmailVerification(user.getEmail());
+				return Message.USER_ADDED_AND_VERIFY_EMAIL_TO_CONTINUE;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -67,10 +68,11 @@ public class UserService {
 		return Message.EMAIL_ID_DOESNT_EXISTS;
 	}
 
-	public Message sendEmail(String email) {
+	public Message sendEmailToRecoverPassword(String email) {
 		User user = userRepository.findByEmail(email);
 		if (user != null) {
-			if (emailService.sendMail(email, "Click on link to reset password \n" + utility.getBody("reset_password",user.getId()),
+			if (emailService.sendMail(email,
+					"Click on link to reset password \n" + utility.getBody("reset_password", user.getId()),
 					"Recovery password for Fundoo App"))
 				return Message.EMAIL_SENT_SUCCESSFULLY;
 			return Message.SERVER_SIDE_PROBLEM;
@@ -80,9 +82,9 @@ public class UserService {
 
 	public Message resetPassword(String password, String token) {
 		Long userId = userToken.getUserIdFromToken(token);
-		if(userId != null) {
+		if (userId != null) {
 			User user = userRepository.findById(userId).get();
-			if(user != null) {
+			if (user != null) {
 				user.setPassword(password);
 				userRepository.save(user);
 				return Message.PASSWORD_UPDATED_SUCCESSFULLY_PLEASE_LOGIN_TO_CONTINUE;
@@ -90,12 +92,37 @@ public class UserService {
 		}
 		return Message.INVALID_USER;
 	}
-	
+
 	public Response getResponse(Message message, Object result, int status) {
 		response.setMessage(message);
 		response.setResult(result);
 		response.setStatus(status);
 		return response;
+	}
+
+	public Message sendEmailVerification(String email) {
+		User user = userRepository.findByEmail(email);
+		if (user != null) {
+			if (emailService.sendMail(email,
+					"Click on link to verify email \n" + utility.getBody("verify_email", user.getId()),
+					"Email verification for Fundoo App"))
+				return Message.EMAIL_SENT_SUCCESSFULLY;
+			return Message.SERVER_SIDE_PROBLEM;
+		}
+		return Message.EMAIL_ID_DOESNT_EXISTS;
+	}
+
+	public Message verifyEmail(String token) {
+		Long userId = userToken.getUserIdFromToken(token);
+		if (userId != null) {
+			User user = userRepository.findById(userId).get();
+			if (user != null) {
+				user.setIsVerified(1);
+				userRepository.save(user);
+				return Message.EMAIL_VERIFIED_SUCCESSFULLY_PLEASE_LOGIN_TO_CONTINUE;
+			}
+		}
+		return Message.INVALID_USER;
 	}
 
 }
