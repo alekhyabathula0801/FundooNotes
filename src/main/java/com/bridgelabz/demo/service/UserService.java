@@ -21,12 +21,6 @@ public class UserService {
 	private EmailService emailService;
 
 	@Autowired
-	private UserToken userToken;
-
-	@Autowired
-	private Utility utility;
-
-	@Autowired
 	Response response;
 
 	public UserService() {
@@ -72,7 +66,7 @@ public class UserService {
 		User user = userRepository.findByEmail(email);
 		if (user != null) {
 			if (emailService.sendMail(email,
-					"Click on link to reset password \n" + utility.getBody("reset_password", user.getId()),
+					"Click on link to reset password \n" + Utility.getBody("reset_password", user.getId()),
 					"Recovery password for Fundoo App"))
 				return Message.EMAIL_SENT_SUCCESSFULLY;
 			return Message.SERVER_SIDE_PROBLEM;
@@ -81,7 +75,7 @@ public class UserService {
 	}
 
 	public Message resetPassword(String password, String token) {
-		Long userId = userToken.getUserIdFromToken(token);
+		Long userId = UserToken.getUserIdFromToken(token);
 		if (userId != null) {
 			User user = userRepository.findById(userId).get();
 			if (user != null) {
@@ -104,7 +98,7 @@ public class UserService {
 		User user = userRepository.findByEmail(email);
 		if (user != null) {
 			if (emailService.sendMail(email,
-					"Click on link to verify email \n" + utility.getBody("verify_email", user.getId()),
+					"Click on link to verify email \n" + Utility.getBody("verify_email", user.getId()),
 					"Email verification for Fundoo App"))
 				return Message.EMAIL_SENT_SUCCESSFULLY;
 			return Message.SERVER_SIDE_PROBLEM;
@@ -113,7 +107,7 @@ public class UserService {
 	}
 
 	public Message verifyEmail(String token) {
-		Long userId = userToken.getUserIdFromToken(token);
+		Long userId = UserToken.getUserIdFromToken(token);
 		if (userId != null) {
 			User user = userRepository.findById(userId).get();
 			if (user != null) {
