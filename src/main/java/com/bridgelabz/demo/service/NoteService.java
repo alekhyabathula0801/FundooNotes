@@ -10,8 +10,10 @@ import org.springframework.stereotype.Service;
 
 import com.bridgelabz.demo.enumeration.Message;
 import com.bridgelabz.demo.model.Label;
+import com.bridgelabz.demo.model.LabelNotesMapping;
 import com.bridgelabz.demo.model.Note;
 import com.bridgelabz.demo.model.Response;
+import com.bridgelabz.demo.repository.LabelNotesMappingRepository;
 import com.bridgelabz.demo.repository.LabelRepository;
 import com.bridgelabz.demo.repository.NoteRepository;
 import com.bridgelabz.demo.repository.UserRepository;
@@ -24,6 +26,9 @@ public class NoteService {
 
 	@Autowired
 	private LabelRepository labelRepository;
+
+	@Autowired
+	private LabelNotesMappingRepository labelNotesMappingRepository;
 
 	@Autowired
 	private UserRepository userRepository;
@@ -102,6 +107,35 @@ public class NoteService {
 		} catch (NoSuchElementException e) {
 			return new ResponseEntity<Response>(
 					userService.getResponse(Message.NOT_FOUND, Message.USER_ID_DOESNT_EXISTS, 404),
+					HttpStatus.NOT_FOUND);
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+		}
+		return new ResponseEntity<Response>(
+				userService.getResponse(Message.SERVER_SIDE_PROBLEM, Message.TRY_AGAIN_LATER, 500),
+				HttpStatus.SERVICE_UNAVAILABLE);
+	}
+
+	public ResponseEntity<Response> mapLabelAndNotes(LabelNotesMapping labelNotesMapping) {
+		Label label;
+		try {
+			label = labelRepository.findById(labelNotesMapping.getLabelId()).get();
+		} catch (NoSuchElementException e) {
+			return new ResponseEntity<Response>(
+					userService.getResponse(Message.NOT_FOUND, Message.LABEL_ID_DOESNT_EXISTS, 404),
+					HttpStatus.NOT_FOUND);
+		}
+		try {
+			Note note = noteRepository.findById(labelNotesMapping.getNoteId()).get();
+			if(!note.getUserId().equals(label.getUserId()))
+				return new ResponseEntity<Response>(userService.getResponse(Message.USER_ID_OF_LABEL_DOESNT_MATCH_WITH_NOTE_USER_ID, null, 200),
+						HttpStatus.OK);
+			LabelNotesMapping labelNotesMappings = labelNotesMappingRepository.save(labelNotesMapping);
+			return new ResponseEntity<Response>(userService.getResponse(Message.SUCCESSFUL, labelNotesMappings, 200),
+					HttpStatus.OK);
+		} catch (NoSuchElementException e) {
+			return new ResponseEntity<Response>(
+					userService.getResponse(Message.NOT_FOUND, Message.NOTE_ID_DOESNT_EXISTS, 404),
 					HttpStatus.NOT_FOUND);
 		} catch (RuntimeException e) {
 			e.printStackTrace();
