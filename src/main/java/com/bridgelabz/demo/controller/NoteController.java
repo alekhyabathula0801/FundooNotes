@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bridgelabz.demo.enumeration.Message;
 import com.bridgelabz.demo.model.Response;
+import com.bridgelabz.demo.model.Label;
 import com.bridgelabz.demo.model.Note;
 import com.bridgelabz.demo.service.NoteService;
 import com.bridgelabz.demo.service.UserService;
@@ -57,6 +58,20 @@ public class NoteController {
 					HttpStatus.CONFLICT);
 		}
 		return noteService.getAllNotesByUserId(userId);
+	}
+	
+	@PostMapping(path = "/add_label")
+	@ApiOperation(value = "Add label")
+	public ResponseEntity<Response> addLabel(@Valid @RequestBody Label label, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			List<String> errorMessages = new ArrayList<String>();
+			for (ObjectError error : bindingResult.getAllErrors()) {
+				errorMessages.add(error.getDefaultMessage());
+			}
+			return new ResponseEntity<Response>(userService.getResponse(Message.CONFLICT, errorMessages, 409),
+					HttpStatus.CONFLICT);
+		}
+		return noteService.addLabel(label);
 	}
 
 }

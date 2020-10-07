@@ -1,5 +1,6 @@
 package com.bridgelabz.demo.model;
 
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.bridgelabz.demo.enumeration.Message;
@@ -12,6 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@Scope("prototype")
 public class Response {
 	private int status;
 	private Message message;

@@ -9,8 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.bridgelabz.demo.enumeration.Message;
+import com.bridgelabz.demo.model.Label;
 import com.bridgelabz.demo.model.Note;
 import com.bridgelabz.demo.model.Response;
+import com.bridgelabz.demo.repository.LabelRepository;
 import com.bridgelabz.demo.repository.NoteRepository;
 import com.bridgelabz.demo.repository.UserRepository;
 
@@ -19,6 +21,9 @@ public class NoteService {
 
 	@Autowired
 	private NoteRepository noteRepository;
+
+	@Autowired
+	private LabelRepository labelRepository;
 
 	@Autowired
 	private UserRepository userRepository;
@@ -35,8 +40,7 @@ public class NoteService {
 			userRepository.findById(note.getUserId()).get();
 			Note noteDetails = noteRepository.save(note);
 			return new ResponseEntity<Response>(
-					userService.getResponse(Message.NOTE_ADDED_SUCCESFULLY, noteDetails, 200),
-					HttpStatus.OK);
+					userService.getResponse(Message.NOTE_ADDED_SUCCESFULLY, noteDetails, 200), HttpStatus.OK);
 		} catch (NoSuchElementException e) {
 			return new ResponseEntity<Response>(
 					userService.getResponse(Message.NOT_FOUND, Message.USER_ID_DOESNT_EXISTS, 404),
@@ -54,12 +58,28 @@ public class NoteService {
 			userRepository.findById(userId).get();
 			List<Note> allNotes = noteRepository.findAllByUserId(userId);
 			if (allNotes.size() != 0)
-				return new ResponseEntity<Response>(
-						userService.getResponse(Message.SUCCESSFUL, allNotes, 200),
+				return new ResponseEntity<Response>(userService.getResponse(Message.SUCCESSFUL, allNotes, 200),
 						HttpStatus.OK);
-			return new ResponseEntity<Response>(
-					userService.getResponse(Message.NO_NOTES_AVAILABLE, allNotes, 204),
+			return new ResponseEntity<Response>(userService.getResponse(Message.NO_NOTES_AVAILABLE, allNotes, 204),
 					HttpStatus.NO_CONTENT);
+		} catch (NoSuchElementException e) {
+			return new ResponseEntity<Response>(
+					userService.getResponse(Message.NOT_FOUND, Message.USER_ID_DOESNT_EXISTS, 404),
+					HttpStatus.NOT_FOUND);
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+		}
+		return new ResponseEntity<Response>(
+				userService.getResponse(Message.SERVER_SIDE_PROBLEM, Message.TRY_AGAIN_LATER, 500),
+				HttpStatus.SERVICE_UNAVAILABLE);
+	}
+
+	public ResponseEntity<Response> addLabel(Label label) {
+		try {
+			userRepository.findById(label.getUserId()).get();
+			Label labels = labelRepository.save(label);
+			return new ResponseEntity<Response>(userService.getResponse(Message.SUCCESSFUL, labels, 200),
+					HttpStatus.OK);
 		} catch (NoSuchElementException e) {
 			return new ResponseEntity<Response>(
 					userService.getResponse(Message.NOT_FOUND, Message.USER_ID_DOESNT_EXISTS, 404),
