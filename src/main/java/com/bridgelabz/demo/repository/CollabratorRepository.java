@@ -3,9 +3,9 @@ package com.bridgelabz.demo.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.bridgelabz.demo.model.LabelNotesMapping;
+import com.bridgelabz.demo.model.Collabrator;
 
 @Repository
-public interface LabelNotesMappingRepository extends JpaRepository<LabelNotesMapping, Long> {
+public interface CollabratorRepository extends JpaRepository<Collabrator, Long> {
 
 }

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bridgelabz.demo.enumeration.Message;
 import com.bridgelabz.demo.model.Response;
+import com.bridgelabz.demo.model.Collabrator;
 import com.bridgelabz.demo.model.Label;
 import com.bridgelabz.demo.model.LabelNotesMapping;
 import com.bridgelabz.demo.model.Note;
@@ -60,7 +61,7 @@ public class NoteController {
 		}
 		return noteService.getAllNotesByUserId(userId);
 	}
-	
+
 	@PostMapping(path = "/add_label")
 	@ApiOperation(value = "Add label")
 	public ResponseEntity<Response> addLabel(@Valid @RequestBody Label label, BindingResult bindingResult) {
@@ -84,10 +85,11 @@ public class NoteController {
 		}
 		return noteService.getAllLabelsByUserId(userId);
 	}
-	
+
 	@PostMapping(path = "/label_notes_mapping")
 	@ApiOperation(value = "Map notes with label")
-	public ResponseEntity<Response> mapLabelAndNotes(@Valid @RequestBody LabelNotesMapping labelNotesMapping, BindingResult bindingResult) {
+	public ResponseEntity<Response> mapLabelAndNotes(@Valid @RequestBody LabelNotesMapping labelNotesMapping,
+			BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			List<String> errorMessages = new ArrayList<String>();
 			for (ObjectError error : bindingResult.getAllErrors()) {
@@ -98,5 +100,20 @@ public class NoteController {
 		}
 		return noteService.mapLabelAndNotes(labelNotesMapping);
 	}
-	
+
+	@PostMapping(path = "/add_collabrator")
+	@ApiOperation(value = "Add Collabrator")
+	public ResponseEntity<Response> addCollabrator(@Valid @RequestBody Collabrator collabrator,
+			BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			List<String> errorMessages = new ArrayList<String>();
+			for (ObjectError error : bindingResult.getAllErrors()) {
+				errorMessages.add(error.getDefaultMessage());
+			}
+			return new ResponseEntity<Response>(userService.getResponse(Message.CONFLICT, errorMessages, 409),
+					HttpStatus.CONFLICT);
+		}
+		return noteService.addCollabrator(collabrator);
+	}
+
 }
