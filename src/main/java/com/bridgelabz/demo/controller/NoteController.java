@@ -52,7 +52,7 @@ public class NoteController {
 
 	@GetMapping(path = "/get_all_notes")
 	@ApiOperation(value = "Get all notes by user id")
-	public ResponseEntity<Response> addUser(@RequestParam Long userId) {
+	public ResponseEntity<Response> getAllNotes(@RequestParam Long userId) {
 		if (userId == null) {
 			return new ResponseEntity<Response>(userService.getResponse(Message.USER_ID_CANNOT_BE_NULL, null, 409),
 					HttpStatus.CONFLICT);
@@ -74,4 +74,14 @@ public class NoteController {
 		return noteService.addLabel(label);
 	}
 
+	@GetMapping(path = "/get_all_labels")
+	@ApiOperation(value = "Get all labels by user id")
+	public ResponseEntity<Response> getAllLabels(@RequestParam Long userId) {
+		if (userId == null) {
+			return new ResponseEntity<Response>(userService.getResponse(Message.USER_ID_CANNOT_BE_NULL, null, 409),
+					HttpStatus.CONFLICT);
+		}
+		return noteService.getAllLabelsByUserId(userId);
+	}
+	
 }

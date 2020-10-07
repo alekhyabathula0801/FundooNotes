@@ -57,11 +57,8 @@ public class NoteService {
 		try {
 			userRepository.findById(userId).get();
 			List<Note> allNotes = noteRepository.findAllByUserId(userId);
-			if (allNotes.size() != 0)
-				return new ResponseEntity<Response>(userService.getResponse(Message.SUCCESSFUL, allNotes, 200),
-						HttpStatus.OK);
-			return new ResponseEntity<Response>(userService.getResponse(Message.NO_NOTES_AVAILABLE, allNotes, 204),
-					HttpStatus.NO_CONTENT);
+			return new ResponseEntity<Response>(userService.getResponse(Message.SUCCESSFUL, allNotes, 200),
+					HttpStatus.OK);
 		} catch (NoSuchElementException e) {
 			return new ResponseEntity<Response>(
 					userService.getResponse(Message.NOT_FOUND, Message.USER_ID_DOESNT_EXISTS, 404),
@@ -79,6 +76,24 @@ public class NoteService {
 			userRepository.findById(label.getUserId()).get();
 			Label labels = labelRepository.save(label);
 			return new ResponseEntity<Response>(userService.getResponse(Message.SUCCESSFUL, labels, 200),
+					HttpStatus.OK);
+		} catch (NoSuchElementException e) {
+			return new ResponseEntity<Response>(
+					userService.getResponse(Message.NOT_FOUND, Message.USER_ID_DOESNT_EXISTS, 404),
+					HttpStatus.NOT_FOUND);
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+		}
+		return new ResponseEntity<Response>(
+				userService.getResponse(Message.SERVER_SIDE_PROBLEM, Message.TRY_AGAIN_LATER, 500),
+				HttpStatus.SERVICE_UNAVAILABLE);
+	}
+
+	public ResponseEntity<Response> getAllLabelsByUserId(Long userId) {
+		try {
+			userRepository.findById(userId).get();
+			List<Label> allLabels = labelRepository.findAllByUserId(userId);
+			return new ResponseEntity<Response>(userService.getResponse(Message.SUCCESSFUL, allLabels, 200),
 					HttpStatus.OK);
 		} catch (NoSuchElementException e) {
 			return new ResponseEntity<Response>(
