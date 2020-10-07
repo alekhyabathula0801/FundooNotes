@@ -74,6 +74,10 @@ public class NoteService {
 	public ResponseEntity<Response> addLabel(Label label) {
 		try {
 			userRepository.findById(label.getUserId()).get();
+			List<Label> allLabels = labelRepository.findAllByUserId(label.getUserId());
+			if (allLabels.contains(label))
+				return new ResponseEntity<Response>(userService.getResponse(Message.LABEL_NAME_EXISTS, null, 409),
+						HttpStatus.CONFLICT);
 			Label labels = labelRepository.save(label);
 			return new ResponseEntity<Response>(userService.getResponse(Message.SUCCESSFUL, labels, 200),
 					HttpStatus.OK);

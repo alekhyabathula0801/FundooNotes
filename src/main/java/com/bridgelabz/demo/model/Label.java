@@ -27,5 +27,27 @@ public class Label {
 	private String labelName;
 	@NotNull(message = "User Id cannot be empty or null")
 	private Long userId;
-
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Label other = (Label) obj;
+		if (labelName == null) {
+			if (other.labelName != null)
+				return false;
+		} else if (!labelName.equals(other.labelName))
+			return false;
+		if (userId == null) {
+			if (other.userId != null)
+				return false;
+		} else if (!userId.equals(other.userId))
+			return false;
+		return true;
+	}
+	
 }
