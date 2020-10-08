@@ -2,6 +2,7 @@ package com.bridgelabz.demo.service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -62,11 +63,12 @@ public class NoteService {
 				HttpStatus.SERVICE_UNAVAILABLE);
 	}
 
-	public ResponseEntity<Response> getAllNotesByUserId(Long userId) {
+	public ResponseEntity<Response> getAllNotesByUserId(Long userId, boolean isTrash) {
 		try {
 			userRepository.findById(userId).get();
 			List<Note> allNotes = noteRepository.findAllByUserId(userId);
-			return new ResponseEntity<Response>(userService.getResponse(Message.SUCCESSFUL, allNotes, 200),
+			List<Note> availableNotes = allNotes.stream().filter(note -> note.getTrash() == isTrash).collect(Collectors.toList());;
+			return new ResponseEntity<Response>(userService.getResponse(Message.SUCCESSFUL, availableNotes, 200),
 					HttpStatus.OK);
 		} catch (NoSuchElementException e) {
 			return new ResponseEntity<Response>(userService.getResponse(Message.USER_ID_DOESNOT_EXISTS, null, 404),

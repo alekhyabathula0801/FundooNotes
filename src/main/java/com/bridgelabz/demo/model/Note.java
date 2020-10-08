@@ -36,5 +36,9 @@ public class Note {
 	private String color = "white";
 	private boolean archive = false;
 	private boolean trash = false;
+	
+	public boolean getTrash() {
+		return trash;
+	}
 
 }

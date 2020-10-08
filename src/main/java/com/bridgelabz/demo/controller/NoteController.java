@@ -91,7 +91,7 @@ public class NoteController {
 			return new ResponseEntity<Response>(userService.getResponse(Message.USER_ID_CANNOT_BE_NULL, null, 409),
 					HttpStatus.CONFLICT);
 		}
-		return noteService.getAllNotesByUserId(userId);
+		return noteService.getAllNotesByUserId(userId,false);
 	}
 
 	@PostMapping(path = "/add_label")
