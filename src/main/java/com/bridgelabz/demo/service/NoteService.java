@@ -97,6 +97,33 @@ public class NoteService {
 				HttpStatus.SERVICE_UNAVAILABLE);
 	}
 
+	public ResponseEntity<Response> updateLabel(Label label) {
+		try {
+			userRepository.findById(label.getUserId()).get();
+		} catch (NoSuchElementException e) {
+			return new ResponseEntity<Response>(userService.getResponse(Message.USER_ID_DOESNOT_EXISTS, null, 404),
+					HttpStatus.NOT_FOUND);
+		}
+		try {
+			if (labelRepository.findById(label.getId()).get() != null) {
+				List<Label> allLabels = labelRepository.findAllByUserId(label.getUserId());
+				if (allLabels.contains(label))
+					return new ResponseEntity<Response>(userService.getResponse(Message.LABEL_NAME_EXISTS, null, 409),
+							HttpStatus.CONFLICT);
+				Label labels = labelRepository.save(label);
+				return new ResponseEntity<Response>(userService.getResponse(Message.SUCCESSFUL, labels, 200),
+						HttpStatus.OK);
+			}
+		} catch (NoSuchElementException e) {
+			return new ResponseEntity<Response>(userService.getResponse(Message.LABEL_ID_DOESNOT_EXISTS, null, 404),
+					HttpStatus.NOT_FOUND);
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+		}
+		return new ResponseEntity<Response>(userService.getResponse(Message.TRY_AGAIN_LATER, null, 500),
+				HttpStatus.SERVICE_UNAVAILABLE);
+	}
+
 	public ResponseEntity<Response> getAllLabelsByUserId(Long userId) {
 		try {
 			userRepository.findById(userId).get();
