@@ -62,6 +62,16 @@ public class NoteController {
 		return noteService.addToTrash(noteId);
 	}
 
+	@PostMapping(path = "/restore_note")
+	@ApiOperation(value = "Restore note")
+	public ResponseEntity<Response> restoreNote(@RequestParam Long noteId) {
+		if (noteId == null) {
+			return new ResponseEntity<Response>(userService.getResponse(Message.NOTE_ID_CANNOT_BE_NULL, null, 409),
+					HttpStatus.CONFLICT);
+		}
+		return noteService.restoreNote(noteId);
+	}
+
 	@GetMapping(path = "/get_all_notes")
 	@ApiOperation(value = "Get all notes by user id")
 	public ResponseEntity<Response> getAllNotes(@RequestParam Long userId) {
