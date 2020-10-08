@@ -12,4 +12,8 @@ public interface LabelNotesMappingRepository extends JpaRepository<LabelNotesMap
 
 	LabelNotesMapping findByNoteId(Long noteId);
 
+	LabelNotesMapping findByLabelId(Long labelId);
+
+	void deleteByLabelId(Long labelId);
+
 }

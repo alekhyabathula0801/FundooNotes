@@ -121,6 +121,16 @@ public class NoteController {
 		}
 		return noteService.updateLabel(label);
 	}
+	
+	@DeleteMapping(path = "/delete_label")
+	@ApiOperation(value = "Delete label")
+	public ResponseEntity<Response> deleteLabel(@RequestParam Long labelId) {
+		if (labelId == null) {
+			return new ResponseEntity<Response>(userService.getResponse(Message.CONFLICT, Message.LABEL_ID_CANNOT_BE_NULL, 409),
+					HttpStatus.CONFLICT);
+		}
+		return noteService.deleteLabel(labelId);
+	}
 
 	@GetMapping(path = "/get_all_labels")
 	@ApiOperation(value = "Get all labels by user id")

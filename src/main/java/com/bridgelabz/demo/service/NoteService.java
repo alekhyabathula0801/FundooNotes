@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -124,6 +125,23 @@ public class NoteService {
 				HttpStatus.SERVICE_UNAVAILABLE);
 	}
 
+	public ResponseEntity<Response> deleteLabel(Long labelId) {
+		try {
+			if (labelNotesMappingRepository.findByLabelId(labelId) != null)
+				labelNotesMappingRepository.deleteByLabelId(labelId);
+			labelRepository.deleteById(labelId);
+			return new ResponseEntity<Response>(
+					userService.getResponse(Message.SUCCESSFUL, Message.LABEL_DELETED_SUCCESFULLY, 200), HttpStatus.OK);
+		} catch (EmptyResultDataAccessException e) {
+			return new ResponseEntity<Response>(userService.getResponse(Message.LABEL_ID_DOESNOT_EXISTS, null, 404),
+					HttpStatus.NOT_FOUND);
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+		}
+		return new ResponseEntity<Response>(userService.getResponse(Message.TRY_AGAIN_LATER, null, 500),
+				HttpStatus.SERVICE_UNAVAILABLE);
+	}
+
 	public ResponseEntity<Response> getAllLabelsByUserId(Long userId) {
 		try {
 			userRepository.findById(userId).get();
@@ -208,7 +226,7 @@ public class NoteService {
 			noteRepository.deleteById(noteId);
 			return new ResponseEntity<Response>(
 					userService.getResponse(Message.SUCCESSFUL, Message.NOTE_DELETED_SUCCESFULLY, 200), HttpStatus.OK);
-		} catch (NoSuchElementException e) {
+		} catch (EmptyResultDataAccessException e) {
 			return new ResponseEntity<Response>(userService.getResponse(Message.NOTE_ID_DOESNOT_EXISTS, null, 404),
 					HttpStatus.NOT_FOUND);
 		} catch (RuntimeException e) {
