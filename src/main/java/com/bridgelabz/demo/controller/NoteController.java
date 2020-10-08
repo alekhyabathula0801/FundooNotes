@@ -40,7 +40,7 @@ public class NoteController {
 
 	@PostMapping(path = "/add_note")
 	@ApiOperation(value = "Save Note")
-	public ResponseEntity<Response> addUser(@Valid @RequestBody Note note, BindingResult bindingResult) {
+	public ResponseEntity<Response> addNote(@Valid @RequestBody Note note, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			List<String> errorMessages = new ArrayList<String>();
 			for (ObjectError error : bindingResult.getAllErrors()) {
@@ -50,6 +50,16 @@ public class NoteController {
 					HttpStatus.CONFLICT);
 		}
 		return noteService.addNote(note);
+	}
+
+	@PostMapping(path = "/add_to_trash")
+	@ApiOperation(value = "Add to trash")
+	public ResponseEntity<Response> addToTrash(@RequestParam Long noteId) {
+		if (noteId == null) {
+			return new ResponseEntity<Response>(userService.getResponse(Message.NOTE_ID_CANNOT_BE_NULL, null, 409),
+					HttpStatus.CONFLICT);
+		}
+		return noteService.addToTrash(noteId);
 	}
 
 	@GetMapping(path = "/get_all_notes")
