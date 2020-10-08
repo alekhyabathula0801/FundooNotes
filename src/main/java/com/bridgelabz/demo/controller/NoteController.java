@@ -59,7 +59,7 @@ public class NoteController {
 			return new ResponseEntity<Response>(userService.getResponse(Message.NOTE_ID_CANNOT_BE_NULL, null, 409),
 					HttpStatus.CONFLICT);
 		}
-		return noteService.addToTrash(noteId);
+		return noteService.setIsTrash(noteId, true);
 	}
 
 	@PostMapping(path = "/restore_note")
@@ -69,7 +69,7 @@ public class NoteController {
 			return new ResponseEntity<Response>(userService.getResponse(Message.NOTE_ID_CANNOT_BE_NULL, null, 409),
 					HttpStatus.CONFLICT);
 		}
-		return noteService.restoreNote(noteId);
+		return noteService.setIsTrash(noteId, false);
 	}
 
 	@GetMapping(path = "/get_all_notes")

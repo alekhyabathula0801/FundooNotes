@@ -156,26 +156,10 @@ public class NoteService {
 				HttpStatus.SERVICE_UNAVAILABLE);
 	}
 
-	public ResponseEntity<Response> addToTrash(Long noteId) {
+	public ResponseEntity<Response> setIsTrash(Long noteId, boolean isTrash) {
 		try {
 			Note note = noteRepository.findById(noteId).get();
-			note.setTrash(true);
-			Note notes = noteRepository.save(note);
-			return new ResponseEntity<Response>(userService.getResponse(Message.SUCCESSFUL, notes, 200), HttpStatus.OK);
-		} catch (NoSuchElementException e) {
-			return new ResponseEntity<Response>(userService.getResponse(Message.NOTE_ID_DOESNOT_EXISTS, null, 404),
-					HttpStatus.NOT_FOUND);
-		} catch (RuntimeException e) {
-			e.printStackTrace();
-		}
-		return new ResponseEntity<Response>(userService.getResponse(Message.TRY_AGAIN_LATER, null, 500),
-				HttpStatus.SERVICE_UNAVAILABLE);
-	}
-
-	public ResponseEntity<Response> restoreNote(Long noteId) {
-		try {
-			Note note = noteRepository.findById(noteId).get();
-			note.setTrash(false);
+			note.setTrash(isTrash);
 			Note notes = noteRepository.save(note);
 			return new ResponseEntity<Response>(userService.getResponse(Message.SUCCESSFUL, notes, 200), HttpStatus.OK);
 		} catch (NoSuchElementException e) {
