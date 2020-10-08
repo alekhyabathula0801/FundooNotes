@@ -8,4 +8,8 @@ import com.bridgelabz.demo.model.LabelNotesMapping;
 @Repository
 public interface LabelNotesMappingRepository extends JpaRepository<LabelNotesMapping, Long> {
 
+	void deleteByNoteId(Long noteId);
+
+	LabelNotesMapping findByNoteId(Long noteId);
+
 }

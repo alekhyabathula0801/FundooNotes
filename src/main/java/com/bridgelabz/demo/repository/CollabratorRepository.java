@@ -8,4 +8,8 @@ import com.bridgelabz.demo.model.Collabrator;
 @Repository
 public interface CollabratorRepository extends JpaRepository<Collabrator, Long> {
 
+	void deleteByNoteId(Long noteId);
+
+	Collabrator findByNoteId(Long noteId);
+
 }

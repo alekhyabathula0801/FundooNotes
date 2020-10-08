@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -70,6 +71,16 @@ public class NoteController {
 					HttpStatus.CONFLICT);
 		}
 		return noteService.setIsTrash(noteId, false);
+	}
+	
+	@DeleteMapping(path = "/delete_note")
+	@ApiOperation(value = "Delete note")
+	public ResponseEntity<Response> deleteNote(@RequestParam Long noteId) {
+		if (noteId == null) {
+			return new ResponseEntity<Response>(userService.getResponse(Message.NOTE_ID_CANNOT_BE_NULL, null, 409),
+					HttpStatus.CONFLICT);
+		}
+		return noteService.deleteNote(noteId);
 	}
 
 	@GetMapping(path = "/get_all_notes")

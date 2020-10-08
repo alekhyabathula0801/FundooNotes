@@ -172,4 +172,23 @@ public class NoteService {
 				HttpStatus.SERVICE_UNAVAILABLE);
 	}
 
+	public ResponseEntity<Response> deleteNote(Long noteId) {
+		try {
+			if (labelNotesMappingRepository.findByNoteId(noteId) != null)
+				labelNotesMappingRepository.deleteByNoteId(noteId);
+			if (collabratorRepository.findByNoteId(noteId) != null)
+				collabratorRepository.deleteByNoteId(noteId);
+			noteRepository.deleteById(noteId);
+			return new ResponseEntity<Response>(
+					userService.getResponse(Message.SUCCESSFUL, Message.NOTE_DELETED_SUCCESFULLY, 200), HttpStatus.OK);
+		} catch (NoSuchElementException e) {
+			return new ResponseEntity<Response>(userService.getResponse(Message.NOTE_ID_DOESNOT_EXISTS, null, 404),
+					HttpStatus.NOT_FOUND);
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+		}
+		return new ResponseEntity<Response>(userService.getResponse(Message.TRY_AGAIN_LATER, null, 500),
+				HttpStatus.SERVICE_UNAVAILABLE);
+	}
+
 }
