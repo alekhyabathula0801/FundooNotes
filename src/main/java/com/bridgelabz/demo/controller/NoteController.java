@@ -93,6 +93,16 @@ public class NoteController {
 		}
 		return noteService.getAllNotesByUserId(userId,false);
 	}
+	
+	@GetMapping(path = "/get_all_notes_in_bin")
+	@ApiOperation(value = "Get all notes in bin by user id ")
+	public ResponseEntity<Response> getAllNotesInBin(@RequestParam Long userId) {
+		if (userId == null) {
+			return new ResponseEntity<Response>(userService.getResponse(Message.USER_ID_CANNOT_BE_NULL, null, 409),
+					HttpStatus.CONFLICT);
+		}
+		return noteService.getAllNotesByUserId(userId,true);
+	}
 
 	@PostMapping(path = "/add_label")
 	@ApiOperation(value = "Add label")

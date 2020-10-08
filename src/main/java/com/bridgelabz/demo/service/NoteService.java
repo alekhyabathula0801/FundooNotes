@@ -66,8 +66,10 @@ public class NoteService {
 	public ResponseEntity<Response> getAllNotesByUserId(Long userId, boolean isTrash) {
 		try {
 			userRepository.findById(userId).get();
-			List<Note> allNotes = noteRepository.findAllByUserId(userId);
-			List<Note> availableNotes = allNotes.stream().filter(note -> note.getTrash() == isTrash).collect(Collectors.toList());;
+			List<Note> availableNotes = noteRepository.findAllByUserId(userId)
+													  .stream()
+													  .filter(note -> note.getTrash() == isTrash)
+													  .collect(Collectors.toList());;
 			return new ResponseEntity<Response>(userService.getResponse(Message.SUCCESSFUL, availableNotes, 200),
 					HttpStatus.OK);
 		} catch (NoSuchElementException e) {
