@@ -29,7 +29,7 @@ import com.bridgelabz.demo.service.UserService;
 import io.swagger.annotations.ApiOperation;
 
 @Controller
-@RequestMapping(path = "fundoo")
+@RequestMapping(path = "note")
 public class NoteController {
 
 	@Autowired
