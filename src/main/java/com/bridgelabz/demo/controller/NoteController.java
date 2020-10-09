@@ -53,8 +53,22 @@ public class NoteController {
 		}
 		return noteService.addNote(note);
 	}
+	
+	@PutMapping(path = "/update_note")
+	@ApiOperation(value = "Update Note")
+	public ResponseEntity<Response> updateNote(@Valid @RequestBody Note note, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			List<String> errorMessages = new ArrayList<String>();
+			for (ObjectError error : bindingResult.getAllErrors()) {
+				errorMessages.add(error.getDefaultMessage());
+			}
+			return new ResponseEntity<Response>(userService.getResponse(Message.CONFLICT, errorMessages, 409),
+					HttpStatus.CONFLICT);
+		}
+		return noteService.updateNote(note);
+	}
 
-	@PostMapping(path = "/add_to_trash")
+	@PutMapping(path = "/add_to_trash")
 	@ApiOperation(value = "Add to trash")
 	public ResponseEntity<Response> addToTrash(@RequestParam Long noteId) {
 		if (noteId == null) {
@@ -64,7 +78,7 @@ public class NoteController {
 		return noteService.setIsTrash(noteId, true);
 	}
 
-	@PostMapping(path = "/restore_note")
+	@PutMapping(path = "/restore_note")
 	@ApiOperation(value = "Restore note")
 	public ResponseEntity<Response> restoreNote(@RequestParam Long noteId) {
 		if (noteId == null) {

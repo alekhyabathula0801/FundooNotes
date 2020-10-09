@@ -66,14 +66,70 @@ public class NoteService {
 	public ResponseEntity<Response> getAllNotesByUserId(Long userId, boolean isTrash) {
 		try {
 			userRepository.findById(userId).get();
-			List<Note> availableNotes = noteRepository.findAllByUserId(userId)
-													  .stream()
-													  .filter(note -> note.getTrash() == isTrash)
-													  .collect(Collectors.toList());;
+			List<Note> availableNotes = noteRepository.findAllByUserId(userId).stream()
+					.filter(note -> note.getTrash() == isTrash).collect(Collectors.toList());
+			;
 			return new ResponseEntity<Response>(userService.getResponse(Message.SUCCESSFUL, availableNotes, 200),
 					HttpStatus.OK);
 		} catch (NoSuchElementException e) {
 			return new ResponseEntity<Response>(userService.getResponse(Message.USER_ID_DOESNOT_EXISTS, null, 404),
+					HttpStatus.NOT_FOUND);
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+		}
+		return new ResponseEntity<Response>(userService.getResponse(Message.TRY_AGAIN_LATER, null, 500),
+				HttpStatus.SERVICE_UNAVAILABLE);
+	}
+
+	public ResponseEntity<Response> setIsTrash(Long noteId, boolean isTrash) {
+		try {
+			Note note = noteRepository.findById(noteId).get();
+			note.setTrash(isTrash);
+			Note notes = noteRepository.save(note);
+			return new ResponseEntity<Response>(userService.getResponse(Message.SUCCESSFUL, notes, 200), HttpStatus.OK);
+		} catch (NoSuchElementException e) {
+			return new ResponseEntity<Response>(userService.getResponse(Message.NOTE_ID_DOESNOT_EXISTS, null, 404),
+					HttpStatus.NOT_FOUND);
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+		}
+		return new ResponseEntity<Response>(userService.getResponse(Message.TRY_AGAIN_LATER, null, 500),
+				HttpStatus.SERVICE_UNAVAILABLE);
+	}
+
+	public ResponseEntity<Response> deleteNote(Long noteId) {
+		try {
+			if (labelNotesMappingRepository.findByNoteId(noteId) != null)
+				labelNotesMappingRepository.deleteByNoteId(noteId);
+			if (collabratorRepository.findByNoteId(noteId) != null)
+				collabratorRepository.deleteByNoteId(noteId);
+			noteRepository.deleteById(noteId);
+			return new ResponseEntity<Response>(
+					userService.getResponse(Message.SUCCESSFUL, Message.NOTE_DELETED_SUCCESFULLY, 200), HttpStatus.OK);
+		} catch (EmptyResultDataAccessException e) {
+			return new ResponseEntity<Response>(userService.getResponse(Message.NOTE_ID_DOESNOT_EXISTS, null, 404),
+					HttpStatus.NOT_FOUND);
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+		}
+		return new ResponseEntity<Response>(userService.getResponse(Message.TRY_AGAIN_LATER, null, 500),
+				HttpStatus.SERVICE_UNAVAILABLE);
+	}
+
+	public ResponseEntity<Response> updateNote(Note note) {
+		try {
+			userRepository.findById(note.getUserId()).get();
+		} catch (NoSuchElementException e) {
+			return new ResponseEntity<Response>(userService.getResponse(Message.USER_ID_DOESNOT_EXISTS, null, 404),
+					HttpStatus.NOT_FOUND);
+		}
+		try {
+			noteRepository.findById(note.getId()).get();
+			Note noteDetails = noteRepository.save(note);
+			return new ResponseEntity<Response>(
+					userService.getResponse(Message.NOTE_UPDATED_SUCCESFULLY, noteDetails, 200), HttpStatus.OK);
+		} catch (NoSuchElementException e) {
+			return new ResponseEntity<Response>(userService.getResponse(Message.NOTE_ID_DOESNOT_EXISTS, null, 404),
 					HttpStatus.NOT_FOUND);
 		} catch (RuntimeException e) {
 			e.printStackTrace();
@@ -196,41 +252,6 @@ public class NoteService {
 			return new ResponseEntity<Response>(userService.getResponse(Message.SUCCESSFUL, collabrators, 200),
 					HttpStatus.OK);
 		} catch (NoSuchElementException e) {
-			return new ResponseEntity<Response>(userService.getResponse(Message.NOTE_ID_DOESNOT_EXISTS, null, 404),
-					HttpStatus.NOT_FOUND);
-		} catch (RuntimeException e) {
-			e.printStackTrace();
-		}
-		return new ResponseEntity<Response>(userService.getResponse(Message.TRY_AGAIN_LATER, null, 500),
-				HttpStatus.SERVICE_UNAVAILABLE);
-	}
-
-	public ResponseEntity<Response> setIsTrash(Long noteId, boolean isTrash) {
-		try {
-			Note note = noteRepository.findById(noteId).get();
-			note.setTrash(isTrash);
-			Note notes = noteRepository.save(note);
-			return new ResponseEntity<Response>(userService.getResponse(Message.SUCCESSFUL, notes, 200), HttpStatus.OK);
-		} catch (NoSuchElementException e) {
-			return new ResponseEntity<Response>(userService.getResponse(Message.NOTE_ID_DOESNOT_EXISTS, null, 404),
-					HttpStatus.NOT_FOUND);
-		} catch (RuntimeException e) {
-			e.printStackTrace();
-		}
-		return new ResponseEntity<Response>(userService.getResponse(Message.TRY_AGAIN_LATER, null, 500),
-				HttpStatus.SERVICE_UNAVAILABLE);
-	}
-
-	public ResponseEntity<Response> deleteNote(Long noteId) {
-		try {
-			if (labelNotesMappingRepository.findByNoteId(noteId) != null)
-				labelNotesMappingRepository.deleteByNoteId(noteId);
-			if (collabratorRepository.findByNoteId(noteId) != null)
-				collabratorRepository.deleteByNoteId(noteId);
-			noteRepository.deleteById(noteId);
-			return new ResponseEntity<Response>(
-					userService.getResponse(Message.SUCCESSFUL, Message.NOTE_DELETED_SUCCESFULLY, 200), HttpStatus.OK);
-		} catch (EmptyResultDataAccessException e) {
 			return new ResponseEntity<Response>(userService.getResponse(Message.NOTE_ID_DOESNOT_EXISTS, null, 404),
 					HttpStatus.NOT_FOUND);
 		} catch (RuntimeException e) {
