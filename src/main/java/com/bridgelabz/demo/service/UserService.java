@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bridgelabz.demo.enumeration.Message;
-import com.bridgelabz.demo.model.Login;
+import com.bridgelabz.demo.dto.Login;
 import com.bridgelabz.demo.model.Response;
 import com.bridgelabz.demo.model.User;
 import com.bridgelabz.demo.repository.UserRepository;
