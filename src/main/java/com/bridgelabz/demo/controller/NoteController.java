@@ -51,7 +51,7 @@ public class NoteController {
 		}
 		return noteService.addNote(note);
 	}
-	
+
 	@PutMapping(path = "/update_note")
 	@ApiOperation(value = "Update Note")
 	public ResponseEntity<Response> updateNote(@Valid @RequestBody Note note, BindingResult bindingResult) {
@@ -103,9 +103,9 @@ public class NoteController {
 			return new ResponseEntity<Response>(userService.getResponse(Message.USER_ID_CANNOT_BE_NULL, null, 409),
 					HttpStatus.CONFLICT);
 		}
-		return noteService.getAllNotesByUserId(userId,false);
+		return noteService.getAllNotesByUserId(userId, false);
 	}
-	
+
 	@GetMapping(path = "/get_all_notes_in_bin")
 	@ApiOperation(value = "Get all notes in bin by user id ")
 	public ResponseEntity<Response> getAllNotesInBin(@RequestParam Long userId) {
@@ -113,9 +113,9 @@ public class NoteController {
 			return new ResponseEntity<Response>(userService.getResponse(Message.USER_ID_CANNOT_BE_NULL, null, 409),
 					HttpStatus.CONFLICT);
 		}
-		return noteService.getAllNotesByUserId(userId,true);
+		return noteService.getAllNotesByUserId(userId, true);
 	}
-	
+
 	@GetMapping(path = "/get_all_archive_notes")
 	@ApiOperation(value = "Get all archive notes by user id")
 	public ResponseEntity<Response> getAllArchiveNotes(@RequestParam Long userId) {

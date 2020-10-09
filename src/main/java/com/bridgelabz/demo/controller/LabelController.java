@@ -23,7 +23,7 @@ import com.bridgelabz.demo.enumeration.Message;
 import com.bridgelabz.demo.model.Label;
 import com.bridgelabz.demo.model.LabelNotesMapping;
 import com.bridgelabz.demo.model.Response;
-import com.bridgelabz.demo.service.NoteService;
+import com.bridgelabz.demo.service.LabelService;
 import com.bridgelabz.demo.service.UserService;
 
 import io.swagger.annotations.ApiOperation;
@@ -36,8 +36,8 @@ public class LabelController {
 	UserService userService;
 
 	@Autowired
-	NoteService noteService;
-	
+	LabelService labelService;
+
 	@PostMapping(path = "/add_label")
 	@ApiOperation(value = "Add label")
 	public ResponseEntity<Response> addLabel(@Valid @RequestBody Label label, BindingResult bindingResult) {
@@ -49,7 +49,7 @@ public class LabelController {
 			return new ResponseEntity<Response>(userService.getResponse(Message.CONFLICT, errorMessages, 409),
 					HttpStatus.CONFLICT);
 		}
-		return noteService.addLabel(label);
+		return labelService.addLabel(label);
 	}
 
 	@PutMapping(path = "/edit_label")
@@ -63,17 +63,18 @@ public class LabelController {
 			return new ResponseEntity<Response>(userService.getResponse(Message.CONFLICT, errorMessages, 409),
 					HttpStatus.CONFLICT);
 		}
-		return noteService.updateLabel(label);
+		return labelService.updateLabel(label);
 	}
-	
+
 	@DeleteMapping(path = "/delete_label")
 	@ApiOperation(value = "Delete label")
 	public ResponseEntity<Response> deleteLabel(@RequestParam Long labelId) {
 		if (labelId == null) {
-			return new ResponseEntity<Response>(userService.getResponse(Message.CONFLICT, Message.LABEL_ID_CANNOT_BE_NULL, 409),
+			return new ResponseEntity<Response>(
+					userService.getResponse(Message.CONFLICT, Message.LABEL_ID_CANNOT_BE_NULL, 409),
 					HttpStatus.CONFLICT);
 		}
-		return noteService.deleteLabel(labelId);
+		return labelService.deleteLabel(labelId);
 	}
 
 	@GetMapping(path = "/get_all_labels")
@@ -83,7 +84,7 @@ public class LabelController {
 			return new ResponseEntity<Response>(userService.getResponse(Message.USER_ID_CANNOT_BE_NULL, null, 409),
 					HttpStatus.CONFLICT);
 		}
-		return noteService.getAllLabelsByUserId(userId);
+		return labelService.getAllLabelsByUserId(userId);
 	}
 
 	@PostMapping(path = "/label_notes_mapping")
@@ -98,6 +99,6 @@ public class LabelController {
 			return new ResponseEntity<Response>(userService.getResponse(Message.CONFLICT, errorMessages, 409),
 					HttpStatus.CONFLICT);
 		}
-		return noteService.mapLabelAndNotes(labelNotesMapping);
+		return labelService.mapLabelAndNotes(labelNotesMapping);
 	}
 }
