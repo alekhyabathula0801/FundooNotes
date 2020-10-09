@@ -66,9 +66,29 @@ public class NoteService {
 	public ResponseEntity<Response> getAllNotesByUserId(Long userId, boolean isTrash) {
 		try {
 			userRepository.findById(userId).get();
-			List<Note> availableNotes = noteRepository.findAllByUserId(userId).stream()
-					.filter(note -> note.getTrash() == isTrash).collect(Collectors.toList());
-			;
+			List<Note> availableNotes = noteRepository.findAllByUserId(userId)
+												      .stream()
+												      .filter(note -> note.getTrash() == isTrash && !note.getArchive())
+												      .collect(Collectors.toList());
+			return new ResponseEntity<Response>(userService.getResponse(Message.SUCCESSFUL, availableNotes, 200),
+					HttpStatus.OK);
+		} catch (NoSuchElementException e) {
+			return new ResponseEntity<Response>(userService.getResponse(Message.USER_ID_DOESNOT_EXISTS, null, 404),
+					HttpStatus.NOT_FOUND);
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+		}
+		return new ResponseEntity<Response>(userService.getResponse(Message.TRY_AGAIN_LATER, null, 500),
+				HttpStatus.SERVICE_UNAVAILABLE);
+	}
+
+	public ResponseEntity<Response> getAllArchiveNotesByUserId(Long userId) {
+		try {
+			userRepository.findById(userId).get();
+			List<Note> availableNotes = noteRepository.findAllByUserId(userId)
+													  .stream()
+													  .filter(note -> !note.getTrash() && note.getArchive())
+													  .collect(Collectors.toList());
 			return new ResponseEntity<Response>(userService.getResponse(Message.SUCCESSFUL, availableNotes, 200),
 					HttpStatus.OK);
 		} catch (NoSuchElementException e) {

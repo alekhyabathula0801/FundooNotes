@@ -117,6 +117,16 @@ public class NoteController {
 		}
 		return noteService.getAllNotesByUserId(userId,true);
 	}
+	
+	@GetMapping(path = "/get_all_archive_notes")
+	@ApiOperation(value = "Get all archive notes by user id")
+	public ResponseEntity<Response> getAllArchiveNotes(@RequestParam Long userId) {
+		if (userId == null) {
+			return new ResponseEntity<Response>(userService.getResponse(Message.USER_ID_CANNOT_BE_NULL, null, 409),
+					HttpStatus.CONFLICT);
+		}
+		return noteService.getAllArchiveNotesByUserId(userId);
+	}
 
 	@PostMapping(path = "/add_label")
 	@ApiOperation(value = "Add label")

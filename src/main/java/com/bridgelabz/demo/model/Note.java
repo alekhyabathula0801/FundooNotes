@@ -41,4 +41,8 @@ public class Note {
 		return trash;
 	}
 
+	public boolean getArchive() {
+		return archive;
+	}
+
 }
