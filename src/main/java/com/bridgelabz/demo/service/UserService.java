@@ -1,6 +1,8 @@
 package com.bridgelabz.demo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.bridgelabz.demo.enumeration.Message;
@@ -41,25 +43,21 @@ public class UserService {
 		return Message.EMAIL_ID_ALREADY_EXISTS;
 	}
 
-	public User userLogin(Login login) {
+	public ResponseEntity<Response> userLogin(Login login) {
 		User user = userRepository.findByEmail(login.getEmail());
 		if (user != null) {
 			if (user.getPassword().equals(login.getPassword()) & user.getIsVerified())
-				return user;
+				return new ResponseEntity<Response>(
+						getResponse(Message.USER_LOGGED_IN_SUCCESFULL, UserToken.createToken(user.getId()), 200),
+						HttpStatus.OK);
+			if (!user.getIsVerified())
+				return new ResponseEntity<Response>(getResponse(Message.EMAIL_HAS_NOT_VERIFIED, null, 404),
+						HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<Response>(getResponse(Message.ENTERED_WRONG_PASSWORD, null, 404),
+					HttpStatus.BAD_REQUEST);
 		}
-		return null;
-	}
-
-	public Message validateUser(Login login) {
-		User user = userRepository.findByEmail(login.getEmail());
-		if (user != null) {
-			if (user.getPassword().equals(login.getPassword())) {
-				if (!user.getIsVerified())
-					return Message.EMAIL_HAS_NOT_VERIFIED;
-			}
-			return Message.ENTERED_WRONG_PASSWORD;
-		}
-		return Message.EMAIL_ID_DOESNT_EXISTS;
+		return new ResponseEntity<Response>(getResponse(Message.EMAIL_ID_DOESNT_EXISTS, null, 404),
+				HttpStatus.BAD_REQUEST);
 	}
 
 	public Message sendEmailToRecoverPassword(String email) {

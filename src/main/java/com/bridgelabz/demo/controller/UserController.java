@@ -62,13 +62,7 @@ public class UserController {
 			return new ResponseEntity<Response>(userService.getResponse(Message.CONFLICT, errorMessages, 409),
 					HttpStatus.CONFLICT);
 		}
-		User user = userService.userLogin(login);
-		if (user != null)
-			return new ResponseEntity<Response>(
-					userService.getResponse(Message.USER_LOGGED_IN_SUCCESFULL, user.getId(), 200), HttpStatus.OK);
-		Message message = userService.validateUser(login);
-		return new ResponseEntity<Response>(userService.getResponse(Message.BAD_REQUEST, message, 404),
-				HttpStatus.BAD_REQUEST);
+		return userService.userLogin(login);
 	}
 
 	@PostMapping(path = "/send_email_verification")
