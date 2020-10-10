@@ -10,8 +10,8 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 
+import com.bridgelabz.demo.dto.Response;
 import com.bridgelabz.demo.enumeration.Message;
-import com.bridgelabz.demo.model.Response;
 
 @ControllerAdvice
 public class FundooNotesExceptionHandler {

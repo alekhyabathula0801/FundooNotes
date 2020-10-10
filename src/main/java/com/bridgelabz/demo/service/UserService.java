@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.bridgelabz.demo.enumeration.Message;
 import com.bridgelabz.demo.dto.Login;
-import com.bridgelabz.demo.model.Response;
+import com.bridgelabz.demo.dto.Response;
 import com.bridgelabz.demo.model.User;
 import com.bridgelabz.demo.repository.UserRepository;
 import com.bridgelabz.demo.util.UserToken;

@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.bridgelabz.demo.dto.Response;
 import com.bridgelabz.demo.enumeration.Message;
-import com.bridgelabz.demo.model.Response;
 import com.bridgelabz.demo.model.Collabrator;
 import com.bridgelabz.demo.model.Note;
 import com.bridgelabz.demo.service.NoteService;

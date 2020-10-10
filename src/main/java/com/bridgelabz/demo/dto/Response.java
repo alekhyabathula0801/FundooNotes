@@ -1,4 +1,4 @@
-package com.bridgelabz.demo.model;
+package com.bridgelabz.demo.dto;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;

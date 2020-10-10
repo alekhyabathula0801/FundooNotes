@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.bridgelabz.demo.dto.Response;
 import com.bridgelabz.demo.enumeration.Message;
 import com.bridgelabz.demo.model.Label;
 import com.bridgelabz.demo.model.LabelNotesMapping;
-import com.bridgelabz.demo.model.Response;
 import com.bridgelabz.demo.service.LabelService;
 import com.bridgelabz.demo.service.UserService;
 

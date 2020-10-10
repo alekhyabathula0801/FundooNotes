@@ -9,11 +9,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.bridgelabz.demo.dto.Response;
 import com.bridgelabz.demo.enumeration.Message;
 import com.bridgelabz.demo.model.Label;
 import com.bridgelabz.demo.model.LabelNotesMapping;
 import com.bridgelabz.demo.model.Note;
-import com.bridgelabz.demo.model.Response;
 import com.bridgelabz.demo.repository.LabelNotesMappingRepository;
 import com.bridgelabz.demo.repository.LabelRepository;
 import com.bridgelabz.demo.repository.NoteRepository;
