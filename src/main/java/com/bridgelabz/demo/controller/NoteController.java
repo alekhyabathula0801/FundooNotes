@@ -69,6 +69,21 @@ public class NoteController {
 		return noteService.updateNote(note, token);
 	}
 
+	@PutMapping(path = "/update_color")
+	@ApiOperation(value = "Update note color")
+	public ResponseEntity<Response> updateColor(@RequestHeader("token") String token, @RequestParam String color,
+			@RequestParam Long noteId) {
+		if (token == null) {
+			return new ResponseEntity<Response>(userService.getResponse(Message.USER_ID_CANNOT_BE_NULL, null, 409),
+					HttpStatus.CONFLICT);
+		}
+		if (noteId == null) {
+			return new ResponseEntity<Response>(userService.getResponse(Message.NOTE_ID_CANNOT_BE_NULL, null, 409),
+					HttpStatus.CONFLICT);
+		}
+		return noteService.updateColor(noteId, color, token);
+	}
+
 	@PutMapping(path = "/add_to_trash")
 	@ApiOperation(value = "Add to trash")
 	public ResponseEntity<Response> addToTrash(@RequestParam Long noteId, @RequestHeader("token") String token) {

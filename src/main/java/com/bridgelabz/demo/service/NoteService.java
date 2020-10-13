@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.bridgelabz.demo.dto.Collabrator;
 import com.bridgelabz.demo.dto.Response;
 import com.bridgelabz.demo.enumeration.Message;
+import com.bridgelabz.demo.exception.FundooNotesException;
 import com.bridgelabz.demo.model.Note;
 import com.bridgelabz.demo.model.User;
 import com.bridgelabz.demo.repository.NoteRepository;
@@ -99,6 +100,7 @@ public class NoteService {
 			Note note = noteRepository.findById(noteId).get();
 			if (note.getUser().getUserId().equals(userId)) {
 				note.setTrash(isTrash);
+				note.setModifiedDate(LocalDateTime.now());
 				Note notes = noteRepository.save(note);
 				return new ResponseEntity<Response>(userService.getResponse(Message.SUCCESSFUL, notes, 200),
 						HttpStatus.OK);
@@ -156,6 +158,21 @@ public class NoteService {
 					HttpStatus.NOT_FOUND);
 		} catch (RuntimeException e) {
 			e.printStackTrace();
+		}
+		return new ResponseEntity<Response>(userService.getResponse(Message.TRY_AGAIN_LATER, null, 500),
+				HttpStatus.SERVICE_UNAVAILABLE);
+	}
+
+	public ResponseEntity<Response> updateColor(Long noteId, String color, String token) {
+		Note note = noteRepository.findById(noteId)
+				.orElseThrow(() -> new FundooNotesException(Message.NOTE_ID_DOESNOT_EXISTS, HttpStatus.BAD_REQUEST));
+		Long userId = UserToken.getUserIdFromToken(token);
+		if (userId == note.getUser().getUserId()) {
+			note.setColor(color);
+			note.setModifiedDate(LocalDateTime.now());
+			note = noteRepository.save(note);
+			return new ResponseEntity<Response>(userService.getResponse(Message.NOTE_UPDATED_SUCCESFULLY, note, 200),
+					HttpStatus.OK);
 		}
 		return new ResponseEntity<Response>(userService.getResponse(Message.TRY_AGAIN_LATER, null, 500),
 				HttpStatus.SERVICE_UNAVAILABLE);
