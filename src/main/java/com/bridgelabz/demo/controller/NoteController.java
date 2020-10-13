@@ -81,7 +81,25 @@ public class NoteController {
 			return new ResponseEntity<Response>(userService.getResponse(Message.NOTE_ID_CANNOT_BE_NULL, null, 409),
 					HttpStatus.CONFLICT);
 		}
+		if (color == null) {
+			return new ResponseEntity<Response>(userService.getResponse(Message.COLOR_CANNOT_BE_NULL, null, 409),
+					HttpStatus.CONFLICT);
+		}
 		return noteService.updateColor(noteId, color, token);
+	}
+
+	@PutMapping(path = "/archive_note")
+	@ApiOperation(value = "Add or remove from archive notes")
+	public ResponseEntity<Response> archiveNote(@RequestHeader("token") String token, @RequestParam Long noteId) {
+		if (token == null) {
+			return new ResponseEntity<Response>(userService.getResponse(Message.USER_ID_CANNOT_BE_NULL, null, 409),
+					HttpStatus.CONFLICT);
+		}
+		if (noteId == null) {
+			return new ResponseEntity<Response>(userService.getResponse(Message.NOTE_ID_CANNOT_BE_NULL, null, 409),
+					HttpStatus.CONFLICT);
+		}
+		return noteService.archiveNote(noteId, token);
 	}
 
 	@PutMapping(path = "/add_to_trash")

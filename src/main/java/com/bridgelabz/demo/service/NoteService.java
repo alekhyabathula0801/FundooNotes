@@ -178,6 +178,24 @@ public class NoteService {
 				HttpStatus.SERVICE_UNAVAILABLE);
 	}
 
+	public ResponseEntity<Response> archiveNote(Long noteId, String token) {
+		Note note = noteRepository.findById(noteId)
+				.orElseThrow(() -> new FundooNotesException(Message.NOTE_ID_DOESNOT_EXISTS, HttpStatus.BAD_REQUEST));
+		Long userId = UserToken.getUserIdFromToken(token);
+		if (userId == note.getUser().getUserId()) {
+			if (note.isArchive())
+				note.setArchive(false);
+			else
+				note.setArchive(true);
+			note.setModifiedDate(LocalDateTime.now());
+			note = noteRepository.save(note);
+			return new ResponseEntity<Response>(userService.getResponse(Message.NOTE_UPDATED_SUCCESFULLY, note, 200),
+					HttpStatus.OK);
+		}
+		return new ResponseEntity<Response>(userService.getResponse(Message.TRY_AGAIN_LATER, null, 500),
+				HttpStatus.SERVICE_UNAVAILABLE);
+	}
+
 	public ResponseEntity<Response> addCollabrator(Collabrator collabrator, String token) {
 		Long userId = UserToken.getUserIdFromToken(token);
 		try {
