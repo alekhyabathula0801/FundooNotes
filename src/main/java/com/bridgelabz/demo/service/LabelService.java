@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.bridgelabz.demo.dto.Response;
 import com.bridgelabz.demo.enumeration.Message;
+import com.bridgelabz.demo.exception.FundooNotesException;
 import com.bridgelabz.demo.model.Label;
 import com.bridgelabz.demo.model.Note;
 import com.bridgelabz.demo.model.User;
@@ -140,8 +141,7 @@ public class LabelService {
 			note.getLabel().add(label);
 			note.setModifiedDate(LocalDateTime.now());
 			note = noteRepository.save(note);
-			return new ResponseEntity<Response>(userService.getResponse(Message.SUCCESSFUL, note, 200),
-					HttpStatus.OK);
+			return new ResponseEntity<Response>(userService.getResponse(Message.SUCCESSFUL, note, 200), HttpStatus.OK);
 		} catch (NoSuchElementException e) {
 			return new ResponseEntity<Response>(userService.getResponse(Message.NOTE_ID_DOESNOT_EXISTS, null, 404),
 					HttpStatus.NOT_FOUND);
@@ -150,6 +150,22 @@ public class LabelService {
 		}
 		return new ResponseEntity<Response>(userService.getResponse(Message.TRY_AGAIN_LATER, null, 500),
 				HttpStatus.SERVICE_UNAVAILABLE);
+	}
+
+	public ResponseEntity<Response> removeLabelFromNote(String token, Long labelId, Long noteId) {
+		Long userId = UserToken.getUserIdFromToken(token);
+		Label label = labelRepository.findById(labelId)
+				.orElseThrow(() -> new FundooNotesException(Message.LABEL_ID_DOESNOT_EXISTS, HttpStatus.BAD_REQUEST));
+		Note note = noteRepository.findById(noteId)
+				.orElseThrow(() -> new FundooNotesException(Message.NOTE_ID_DOESNOT_EXISTS, HttpStatus.BAD_REQUEST));
+		if (label.getUser().getUserId() == userId) {
+			note.getLabel().remove(label);
+			note.setModifiedDate(LocalDateTime.now());
+			note = noteRepository.save(note);
+			return new ResponseEntity<Response>(userService.getResponse(Message.SUCCESSFUL, note, 200), HttpStatus.OK);
+		}
+		return new ResponseEntity<Response>(userService.getResponse(Message.INVALID_USER_ID, null, 404),
+				HttpStatus.BAD_REQUEST);
 	}
 
 }

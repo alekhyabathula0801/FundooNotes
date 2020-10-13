@@ -106,6 +106,32 @@ public class LabelController {
 					userService.getResponse(Message.CONFLICT, Message.LABEL_ID_CANNOT_BE_NULL, 409),
 					HttpStatus.CONFLICT);
 		}
+		if (noteId == null) {
+			return new ResponseEntity<Response>(
+					userService.getResponse(Message.CONFLICT, Message.NOTE_ID_CANNOT_BE_NULL, 409),
+					HttpStatus.CONFLICT);
+		}
 		return labelService.mapLabelAndNotes(token, labelId, noteId);
+	}
+
+	@DeleteMapping(path = "/remove_label_from_note")
+	@ApiOperation(value = "Remove label from note")
+	public ResponseEntity<Response> removeLabelFromNote(@RequestParam Long labelId, @RequestParam Long noteId,
+			@RequestHeader("token") String token) {
+		if (token == null) {
+			return new ResponseEntity<Response>(userService.getResponse(Message.USER_ID_CANNOT_BE_NULL, null, 409),
+					HttpStatus.CONFLICT);
+		}
+		if (labelId == null) {
+			return new ResponseEntity<Response>(
+					userService.getResponse(Message.CONFLICT, Message.LABEL_ID_CANNOT_BE_NULL, 409),
+					HttpStatus.CONFLICT);
+		}
+		if (noteId == null) {
+			return new ResponseEntity<Response>(
+					userService.getResponse(Message.CONFLICT, Message.NOTE_ID_CANNOT_BE_NULL, 409),
+					HttpStatus.CONFLICT);
+		}
+		return labelService.removeLabelFromNote(token, labelId, noteId);
 	}
 }
