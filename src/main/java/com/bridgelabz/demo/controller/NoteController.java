@@ -43,7 +43,6 @@ public class NoteController {
 	@ApiOperation(value = "Save Note")
 	public ResponseEntity<Response> addNote(@Valid @RequestBody Note note, @RequestHeader("token") String token,
 			BindingResult bindingResult) {
-		System.out.print("\n in add note");
 		if (bindingResult.hasErrors()) {
 			List<String> errorMessages = new ArrayList<String>();
 			for (ObjectError error : bindingResult.getAllErrors()) {

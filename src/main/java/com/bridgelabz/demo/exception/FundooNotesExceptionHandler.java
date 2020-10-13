@@ -17,6 +17,15 @@ import com.bridgelabz.demo.enumeration.Message;
 public class FundooNotesExceptionHandler {
 	@Autowired
 	Response response;
+	
+	/**
+	 *
+	 * @return Response Entity with message and status
+	 */
+	@ExceptionHandler(FundooNotesException.class)
+	public ResponseEntity<Response> handleFundooNotesException(FundooNotesException e) {
+		return getResponseEntity(e.exceptionType, e.status);
+	}
 
 	/**
 	 *
