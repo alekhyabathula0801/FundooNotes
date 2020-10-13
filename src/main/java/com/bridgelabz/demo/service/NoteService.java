@@ -240,4 +240,22 @@ public class NoteService {
 				HttpStatus.SERVICE_UNAVAILABLE);
 	}
 
+	public ResponseEntity<Response> removeCollabrator(Long noteId, String email, String token) {
+		Long userId = UserToken.getUserIdFromToken(token);
+		User user = userRepository.findByEmail(email);
+		if (user == null)
+			throw new FundooNotesException(Message.EMAIL_ID_DOESNOT_EXISTS, HttpStatus.BAD_REQUEST);
+		Note note = noteRepository.findById(noteId)
+				.orElseThrow(() -> new FundooNotesException(Message.NOTE_ID_DOESNOT_EXISTS, HttpStatus.BAD_REQUEST));
+		if (userId == note.getUser().getUserId()) {
+			user.getCollaboratedNote().remove(note);
+			note.getCollaboratedUser().remove(user);
+			userRepository.save(user);
+			note = noteRepository.save(note);
+			return new ResponseEntity<Response>(userService.getResponse(Message.SUCCESSFUL, note, 200), HttpStatus.OK);
+		}
+		return new ResponseEntity<Response>(userService.getResponse(Message.INVALID_USER_ID, null, 404),
+				HttpStatus.BAD_REQUEST);
+	}
+
 }

@@ -101,7 +101,7 @@ public class NoteController {
 		}
 		return noteService.archiveNote(noteId, token);
 	}
-	
+
 	@PutMapping(path = "/pin_note")
 	@ApiOperation(value = "Add or remove from pinned notes")
 	public ResponseEntity<Response> pinNote(@RequestHeader("token") String token, @RequestParam Long noteId) {
@@ -148,7 +148,7 @@ public class NoteController {
 
 	@GetMapping(path = "/get_all_notes")
 	@ApiOperation(value = "Get all notes by user id")
-	public ResponseEntity<Response> getAllNotes(@RequestHeader String token) {
+	public ResponseEntity<Response> getAllNotes(@RequestHeader("token") String token) {
 		if (token == null) {
 			return new ResponseEntity<Response>(userService.getResponse(Message.USER_ID_CANNOT_BE_NULL, null, 409),
 					HttpStatus.CONFLICT);
@@ -189,6 +189,25 @@ public class NoteController {
 					HttpStatus.CONFLICT);
 		}
 		return noteService.addCollabrator(collabrator, token);
+	}
+
+	@DeleteMapping(path = "/remove_collabrator")
+	@ApiOperation(value = "Remove Collabrator")
+	public ResponseEntity<Response> removeCollabrator(@RequestParam Long noteId, @RequestParam String email,
+			@RequestHeader("token") String token) {
+		if (token == null) {
+			return new ResponseEntity<Response>(userService.getResponse(Message.USER_ID_CANNOT_BE_NULL, null, 409),
+					HttpStatus.CONFLICT);
+		}
+		if (noteId == null) {
+			return new ResponseEntity<Response>(userService.getResponse(Message.NOTE_ID_CANNOT_BE_NULL, null, 409),
+					HttpStatus.CONFLICT);
+		}
+		if (email == null || email == "") {
+			return new ResponseEntity<Response>(
+					userService.getResponse(Message.EMAIL_ID_CANNOT_BE_NULL_OR_EMPTY, null, 409), HttpStatus.CONFLICT);
+		}
+		return noteService.removeCollabrator(noteId, email, token);
 	}
 
 }
