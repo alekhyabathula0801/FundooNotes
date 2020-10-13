@@ -101,6 +101,20 @@ public class NoteController {
 		}
 		return noteService.archiveNote(noteId, token);
 	}
+	
+	@PutMapping(path = "/pin_note")
+	@ApiOperation(value = "Add or remove from pinned notes")
+	public ResponseEntity<Response> pinNote(@RequestHeader("token") String token, @RequestParam Long noteId) {
+		if (token == null) {
+			return new ResponseEntity<Response>(userService.getResponse(Message.USER_ID_CANNOT_BE_NULL, null, 409),
+					HttpStatus.CONFLICT);
+		}
+		if (noteId == null) {
+			return new ResponseEntity<Response>(userService.getResponse(Message.NOTE_ID_CANNOT_BE_NULL, null, 409),
+					HttpStatus.CONFLICT);
+		}
+		return noteService.pinNote(noteId, token);
+	}
 
 	@PutMapping(path = "/add_to_trash")
 	@ApiOperation(value = "Add to trash")

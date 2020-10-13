@@ -174,8 +174,8 @@ public class NoteService {
 			return new ResponseEntity<Response>(userService.getResponse(Message.NOTE_UPDATED_SUCCESFULLY, note, 200),
 					HttpStatus.OK);
 		}
-		return new ResponseEntity<Response>(userService.getResponse(Message.TRY_AGAIN_LATER, null, 500),
-				HttpStatus.SERVICE_UNAVAILABLE);
+		return new ResponseEntity<Response>(userService.getResponse(Message.INVALID_USER_ID, null, 404),
+				HttpStatus.BAD_REQUEST);
 	}
 
 	public ResponseEntity<Response> archiveNote(Long noteId, String token) {
@@ -192,8 +192,26 @@ public class NoteService {
 			return new ResponseEntity<Response>(userService.getResponse(Message.NOTE_UPDATED_SUCCESFULLY, note, 200),
 					HttpStatus.OK);
 		}
-		return new ResponseEntity<Response>(userService.getResponse(Message.TRY_AGAIN_LATER, null, 500),
-				HttpStatus.SERVICE_UNAVAILABLE);
+		return new ResponseEntity<Response>(userService.getResponse(Message.INVALID_USER_ID, null, 404),
+				HttpStatus.BAD_REQUEST);
+	}
+
+	public ResponseEntity<Response> pinNote(Long noteId, String token) {
+		Note note = noteRepository.findById(noteId)
+				.orElseThrow(() -> new FundooNotesException(Message.NOTE_ID_DOESNOT_EXISTS, HttpStatus.BAD_REQUEST));
+		Long userId = UserToken.getUserIdFromToken(token);
+		if (userId == note.getUser().getUserId()) {
+			if (note.isPinned())
+				note.setPinned(false);
+			else
+				note.setPinned(true);
+			note.setModifiedDate(LocalDateTime.now());
+			note = noteRepository.save(note);
+			return new ResponseEntity<Response>(userService.getResponse(Message.NOTE_UPDATED_SUCCESFULLY, note, 200),
+					HttpStatus.OK);
+		}
+		return new ResponseEntity<Response>(userService.getResponse(Message.INVALID_USER_ID, null, 404),
+				HttpStatus.BAD_REQUEST);
 	}
 
 	public ResponseEntity<Response> addCollabrator(Collabrator collabrator, String token) {
