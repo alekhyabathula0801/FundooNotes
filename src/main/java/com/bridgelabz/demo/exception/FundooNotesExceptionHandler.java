@@ -17,7 +17,7 @@ import com.bridgelabz.demo.enumeration.Message;
 public class FundooNotesExceptionHandler {
 	@Autowired
 	Response response;
-	
+
 	/**
 	 *
 	 * @return Response Entity with message and status
@@ -53,7 +53,7 @@ public class FundooNotesExceptionHandler {
 	public ResponseEntity<Response> handleNoHandlerFoundException() {
 		return getResponseEntity(Message.METHOD_NOT_ALLOWED, HttpStatus.NOT_FOUND);
 	}
-	
+
 	/**
 	 *
 	 * @return Response Entity with message and status

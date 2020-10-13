@@ -168,4 +168,16 @@ public class LabelService {
 				HttpStatus.BAD_REQUEST);
 	}
 
+	public ResponseEntity<Response> getAllNotesOfLabel(String token, Long labelId) {
+		Long userId = UserToken.getUserIdFromToken(token);
+		Label label = labelRepository.findById(labelId)
+				.orElseThrow(() -> new FundooNotesException(Message.LABEL_ID_DOESNOT_EXISTS, HttpStatus.BAD_REQUEST));
+		if (label.getUser().getUserId().equals(userId)) {
+			List<Note> notes = label.getNotes();
+			return new ResponseEntity<Response>(userService.getResponse(Message.SUCCESSFUL, notes, 200), HttpStatus.OK);
+		}
+		return new ResponseEntity<Response>(userService.getResponse(Message.INVALID_USER_ID, null, 404),
+				HttpStatus.BAD_REQUEST);
+	}
+
 }

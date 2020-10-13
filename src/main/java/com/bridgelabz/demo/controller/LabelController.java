@@ -134,4 +134,20 @@ public class LabelController {
 		}
 		return labelService.removeLabelFromNote(token, labelId, noteId);
 	}
+
+	@GetMapping(path = "/get_all_notes_of_label")
+	@ApiOperation(value = "Get all notes of label")
+	public ResponseEntity<Response> getAllNotesOfLabel(@RequestParam Long labelId,
+			@RequestHeader("token") String token) {
+		if (token == null) {
+			return new ResponseEntity<Response>(userService.getResponse(Message.USER_ID_CANNOT_BE_NULL, null, 409),
+					HttpStatus.CONFLICT);
+		}
+		if (labelId == null) {
+			return new ResponseEntity<Response>(
+					userService.getResponse(Message.CONFLICT, Message.LABEL_ID_CANNOT_BE_NULL, 409),
+					HttpStatus.CONFLICT);
+		}
+		return labelService.getAllNotesOfLabel(token, labelId);
+	}
 }
