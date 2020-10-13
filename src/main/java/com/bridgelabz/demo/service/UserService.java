@@ -46,11 +46,11 @@ public class UserService {
 	public ResponseEntity<Response> userLogin(Login login) {
 		User user = userRepository.findByEmail(login.getEmail());
 		if (user != null) {
-			if (user.getPassword().equals(login.getPassword()) & user.getIsVerified())
+			if (user.getPassword().equals(login.getPassword()) & user.isVerified())
 				return new ResponseEntity<Response>(
-						getResponse(Message.USER_LOGGED_IN_SUCCESFULL, UserToken.createToken(user.getId()), 200),
+						getResponse(Message.USER_LOGGED_IN_SUCCESFULL, UserToken.createToken(user.getUserId()), 200),
 						HttpStatus.OK);
-			if (!user.getIsVerified())
+			if (!user.isVerified())
 				return new ResponseEntity<Response>(getResponse(Message.EMAIL_HAS_NOT_VERIFIED, null, 404),
 						HttpStatus.BAD_REQUEST);
 			return new ResponseEntity<Response>(getResponse(Message.ENTERED_WRONG_PASSWORD, null, 404),
@@ -64,7 +64,7 @@ public class UserService {
 		User user = userRepository.findByEmail(email);
 		if (user != null) {
 			if (emailService.sendMail(email,
-					"Click on link to reset password \n" + Utility.getBody("reset_password", user.getId()),
+					"Click on link to reset password \n" + Utility.getBody("reset_password", user.getUserId()),
 					"Recovery password for Fundoo App"))
 				return Message.EMAIL_SENT_SUCCESSFULLY;
 			return Message.SERVER_SIDE_PROBLEM;
@@ -96,7 +96,7 @@ public class UserService {
 		User user = userRepository.findByEmail(email);
 		if (user != null) {
 			if (emailService.sendMail(email,
-					"Click on link to verify email \n" + Utility.getBody("verify_email", user.getId()),
+					"Click on link to verify email \n" + Utility.getBody("verify_email", user.getUserId()),
 					"Email verification for Fundoo App"))
 				return Message.EMAIL_SENT_SUCCESSFULLY;
 			return Message.SERVER_SIDE_PROBLEM;
@@ -109,7 +109,7 @@ public class UserService {
 		if (userId != null) {
 			User user = userRepository.findById(userId).get();
 			if (user != null) {
-				user.setIsVerified(true);
+				user.setVerified(true);
 				userRepository.save(user);
 				return Message.EMAIL_VERIFIED_SUCCESSFULLY_PLEASE_LOGIN_TO_CONTINUE;
 			}
